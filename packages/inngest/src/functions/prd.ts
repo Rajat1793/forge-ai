@@ -1,7 +1,7 @@
-import { inngest } from "../index";
+import { EVENTS, inngest } from "../client";
 
 export const generatePrd = inngest.createFunction(
-  { id: "prd-generate" },
-  { event: "prd/generate.requested" },
-  async ({ event }: { event: { data: { featureRequestId: string } } }) => ({ ok: true, featureRequestId: event.data.featureRequestId })
+  { id: "prd-generate", name: "Generate PRD" },
+  { event: EVENTS.PRD_GENERATE },
+  async ({ event }) => ({ ok: true, featureId: (event.data as { featureId: string }).featureId }),
 );

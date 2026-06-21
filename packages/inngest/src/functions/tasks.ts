@@ -1,7 +1,7 @@
-import { inngest } from "../index";
+import { EVENTS, inngest } from "../client";
 
 export const generateTasks = inngest.createFunction(
-  { id: "tasks-generate" },
-  { event: "tasks/generate.requested" },
-  async ({ event }: { event: { data: { featureRequestId: string } } }) => ({ ok: true, featureRequestId: event.data.featureRequestId })
+  { id: "tasks-generate", name: "Generate tasks" },
+  { event: EVENTS.TASKS_GENERATE },
+  async ({ event }) => ({ ok: true, featureId: (event.data as { featureId: string }).featureId }),
 );
