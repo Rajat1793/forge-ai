@@ -1,0 +1,20 @@
+{
+  "name": "@forge-ai/auth",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@forge-ai/db": "workspace:*",
+    "better-auth": "^1.1.13"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
