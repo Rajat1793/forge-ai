@@ -1,0 +1,23 @@
+{
+  "name": "forge-ai",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "dev": "pnpm --filter @forge-ai/web dev",
+    "dev:all": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css}\"",
+    "db:generate": "turbo run db:generate",
+    "db:push": "turbo run db:push",
+    "db:studio": "pnpm --filter @forge-ai/db db:studio"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "turbo": "^2.9.18",
+    "typescript": "^5.9.3"
+  }
+}
