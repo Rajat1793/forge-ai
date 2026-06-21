@@ -1,9 +1,4 @@
-import { NextResponse } from "next/server";
+import { toNextJsHandler } from "better-auth/next-js";
+import { auth } from "@forge-ai/auth";
 
-export async function GET() {
-  return NextResponse.json({ ok: true, route: "auth" });
-}
-
-export async function POST() {
-  return NextResponse.json({ ok: true, route: "auth" });
-}
+export const { GET, POST } = toNextJsHandler(auth);

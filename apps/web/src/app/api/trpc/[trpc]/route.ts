@@ -1,9 +1,17 @@
-import { NextResponse } from "next/server";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import { appRouter, createTRPCContext } from "@forge-ai/api";
 
-export async function GET() {
-  return NextResponse.json({ ok: true, route: "trpc" });
-}
+const handler = (req: Request) =>
+  fetchRequestHandler({
+    endpoint: "/api/trpc",
+    req,
+    router: appRouter,
+    createContext: () => createTRPCContext({ headers: req.headers }),
+    onError({ error, path }) {
+      if (process.env.NODE_ENV === "development") {
+        console.error(`[tRPC] ${path ?? "<no-path>"}: ${error.message}`);
+      }
+    },
+  });
 
-export async function POST() {
-  return NextResponse.json({ ok: true, route: "trpc" });
-}
+export { handler as GET, handler as POST };
