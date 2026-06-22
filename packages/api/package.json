@@ -10,6 +10,7 @@
     "@forge-ai/ai": "workspace:*",
     "@forge-ai/auth": "workspace:*",
     "@forge-ai/db": "workspace:*",
+    "@forge-ai/github": "workspace:*",
     "@forge-ai/inngest": "workspace:*",
     "@trpc/server": "^11.0.0",
     "superjson": "^2.2.2",
