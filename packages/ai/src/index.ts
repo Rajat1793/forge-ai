@@ -9,3 +9,4 @@ export const cheapModel = () => openai(MODEL_CHEAP);
 export const hasAIKey = () => Boolean(process.env.OPENAI_API_KEY);
 
 export * from "./prd";
+export * from "./tasks";
