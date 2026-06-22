@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import { FileText } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClarifyThread } from "@/components/features/clarify-thread";
 import { statusLabel, statusVariant } from "@/lib/feature-status";
@@ -18,9 +21,11 @@ export default async function FeaturePage({ params }: Props) {
     include: {
       project: true,
       clarifyMessages: { orderBy: { createdAt: "asc" } },
+      prds: { select: { id: true, approvedAt: true }, take: 1 },
     },
   });
   if (!feature) notFound();
+  const hasPrd = feature.prds.length > 0;
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
@@ -30,7 +35,15 @@ export default async function FeaturePage({ params }: Props) {
           <span>·</span>
           <span>{feature.source}</span>
         </div>
-        <h1 className="text-3xl font-semibold">{feature.title}</h1>
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="text-3xl font-semibold">{feature.title}</h1>
+          <Button asChild size="sm" variant="outline">
+            <Link href={`/${slug}/features/${feature.id}/prd`}>
+              <FileText className="mr-2 size-4" />
+              {hasPrd ? "View PRD" : "Open PRD"}
+            </Link>
+          </Button>
+        </div>
         <Badge variant={statusVariant(feature.status)}>{statusLabel[feature.status]}</Badge>
       </header>
 
