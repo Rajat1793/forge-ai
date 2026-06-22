@@ -22,6 +22,7 @@ export default async function FeaturePage({ params }: Props) {
       project: true,
       clarifyMessages: { orderBy: { createdAt: "asc" } },
       prds: { select: { id: true, approvedAt: true }, take: 1 },
+      tasks: { orderBy: [{ status: "asc" }, { position: "asc" }] },
     },
   });
   if (!feature) notFound();
@@ -81,6 +82,36 @@ export default async function FeaturePage({ params }: Props) {
             status={feature.status}
           />
         </CardContent>
+
+      {feature.tasks.length > 0 ? (
+        <Card className="border-white/10 bg-slate-900/50">
+          <CardHeader>
+            <CardTitle className="text-base">Tasks ({feature.tasks.length})</CardTitle>
+            <CardDescription className="text-slate-400">
+              Engineering breakdown from the approved PRD.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {feature.tasks.map((t) => (
+                <li
+                  key={t.id}
+                  className="flex items-center justify-between gap-3 rounded-md border border-white/5 bg-slate-950/40 px-3 py-2 text-sm"
+                >
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">{t.type}</Badge>
+                    <span className="text-slate-100">{t.title}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-400">
+                    {t.estimateHours != null ? <span>{t.estimateHours}h</span> : null}
+                    <Badge variant="secondary">{t.status.toLowerCase().replace("_", " ")}</Badge>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      ) : null}
       </Card>
     </div>
   );
