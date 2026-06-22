@@ -1,23 +1,74 @@
-type FeaturePageProps = {
-  params: Promise<{
-    workspace: string;
-    id: string;
-  }>;
-};
+import { notFound } from "next/navigation";
 
-export default async function FeaturePage({ params }: FeaturePageProps) {
-  const { workspace, id } = await params;
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ClarifyThread } from "@/components/features/clarify-thread";
+import { statusLabel, statusVariant } from "@/lib/feature-status";
+import { requireWorkspace } from "@/lib/auth";
+import { prisma } from "@forge-ai/db";
+
+type Props = { params: Promise<{ workspace: string; id: string }> };
+
+export default async function FeaturePage({ params }: Props) {
+  const { workspace: slug, id } = await params;
+  const { workspace } = await requireWorkspace(slug);
+
+  const feature = await prisma.featureRequest.findFirst({
+    where: { id, workspaceId: workspace.id },
+    include: {
+      project: true,
+      clarifyMessages: { orderBy: { createdAt: "asc" } },
+    },
+  });
+  if (!feature) notFound();
 
   return (
-    <main className="mx-auto min-h-screen max-w-5xl px-6 py-10 text-slate-100">
-      <section className="rounded-[2rem] border border-white/10 bg-slate-950/50 p-8 shadow-glow">
-        <p className="text-sm uppercase tracking-[0.3em] text-emerald-200/80">Feature request</p>
-        <h1 className="mt-3 text-3xl font-semibold text-white">{id}</h1>
-        <p className="mt-3 text-sm leading-7 text-slate-300">
-          Workspace <span className="font-medium text-white">{workspace}</span> will host the full request → PRD →
-          task → review workflow here.
-        </p>
-      </section>
-    </main>
+    <div className="mx-auto max-w-4xl space-y-6">
+      <header className="space-y-3">
+        <div className="flex items-center gap-3 text-xs uppercase tracking-wider text-slate-400">
+          <span>{feature.project.name}</span>
+          <span>·</span>
+          <span>{feature.source}</span>
+        </div>
+        <h1 className="text-3xl font-semibold">{feature.title}</h1>
+        <Badge variant={statusVariant(feature.status)}>{statusLabel[feature.status]}</Badge>
+      </header>
+
+      <Card className="border-white/10 bg-slate-900/50">
+        <CardHeader>
+          <CardTitle className="text-base">Original description</CardTitle>
+          <CardDescription className="text-slate-400">
+            Submitted {new Date(feature.createdAt).toLocaleString()}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="whitespace-pre-wrap text-sm leading-7 text-slate-200">
+            {feature.description}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card className="border-white/10 bg-slate-900/50">
+        <CardHeader>
+          <CardTitle className="text-base">Discovery conversation</CardTitle>
+          <CardDescription className="text-slate-400">
+            AI clarifying questions and your replies.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ClarifyThread
+            workspaceSlug={slug}
+            featureId={feature.id}
+            initial={feature.clarifyMessages.map((m) => ({
+              id: m.id,
+              author: m.author,
+              body: m.body,
+              createdAt: m.createdAt.toISOString(),
+            }))}
+            status={feature.status}
+          />
+        </CardContent>
+      </Card>
+    </div>
   );
 }

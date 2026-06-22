@@ -1,5 +1,8 @@
-import { NextResponse } from "next/server";
+import { serve } from "inngest/next";
+import { functions, inngest } from "@forge-ai/inngest";
 
-export async function POST() {
-  return NextResponse.json({ ok: true, route: "inngest" });
-}
+export const { GET, POST, PUT } = serve({
+  client: inngest,
+  functions,
+  signingKey: process.env.INNGEST_SIGNING_KEY,
+});

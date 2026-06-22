@@ -181,6 +181,9 @@ importers:
       '@forge-ai/db':
         specifier: workspace:*
         version: link:../db
+      '@forge-ai/inngest':
+        specifier: workspace:*
+        version: link:../inngest
       '@trpc/server':
         specifier: ^11.0.0
         version: 11.18.0(typescript@5.9.3)
@@ -227,7 +230,30 @@ importers:
 
   packages/github: {}
 
-  packages/inngest: {}
+  packages/inngest:
+    dependencies:
+      '@forge-ai/ai':
+        specifier: workspace:*
+        version: link:../ai
+      '@forge-ai/db':
+        specifier: workspace:*
+        version: link:../db
+      '@forge-ai/github':
+        specifier: workspace:*
+        version: link:../github
+      ai:
+        specifier: ^4.0.22
+        version: 4.3.19(react@19.1.0)(zod@3.25.76)
+      inngest:
+        specifier: ^3.27.4
+        version: 3.54.2(@opentelemetry/core@2.8.0(@opentelemetry/api@1.9.1))(next@15.3.3(@opentelemetry/api@1.9.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(typescript@5.9.3)(zod@3.25.76)
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+    devDependencies:
+      typescript:
+        specifier: ^5.5.4
+        version: 5.9.3
 
   packages/ui: {}
 
