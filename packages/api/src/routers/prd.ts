@@ -92,6 +92,10 @@ export const prdRouter = router({
         where: { id: feature.id },
         data: { status: "PRD_APPROVED" },
       });
+      await inngest.send({
+        name: EVENTS.TASKS_GENERATE,
+        data: { featureId: feature.id },
+      });
       return { ok: true };
     }),
 });
