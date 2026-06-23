@@ -7,6 +7,7 @@ import { taskRouter } from "./routers/task";
 import { repositoryRouter } from "./routers/repository";
 import { pullRequestRouter } from "./routers/pull-request";
 import { reviewRouter } from "./routers/review";
+import { approvalRouter } from "./routers/approval";
 
 export const appRouter = router({
   workspace: workspaceRouter,
@@ -17,6 +18,7 @@ export const appRouter = router({
   repository: repositoryRouter,
   pullRequest: pullRequestRouter,
   review: reviewRouter,
+  approval: approvalRouter,
 });
 
 export type AppRouter = typeof appRouter;
