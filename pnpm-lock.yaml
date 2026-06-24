@@ -181,6 +181,9 @@ importers:
       '@forge-ai/auth':
         specifier: workspace:*
         version: link:../auth
+      '@forge-ai/billing':
+        specifier: workspace:*
+        version: link:../billing
       '@forge-ai/db':
         specifier: workspace:*
         version: link:../db
@@ -217,7 +220,11 @@ importers:
         specifier: ^5.5.4
         version: 5.9.3
 
-  packages/billing: {}
+  packages/billing:
+    devDependencies:
+      typescript:
+        specifier: ^5.5.4
+        version: 5.9.3
 
   packages/config: {}
 
