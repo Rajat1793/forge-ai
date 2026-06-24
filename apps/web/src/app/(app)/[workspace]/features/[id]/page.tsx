@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClarifyThread } from "@/components/features/clarify-thread";
+import { FeatureShipActions } from "@/components/features/feature-ship-actions";
 import { statusLabel, statusVariant } from "@/lib/feature-status";
 import { requireWorkspace } from "@/lib/auth";
 import { prisma } from "@forge-ai/db";
@@ -38,12 +39,19 @@ export default async function FeaturePage({ params }: Props) {
         </div>
         <div className="flex items-start justify-between gap-3">
           <h1 className="text-3xl font-semibold">{feature.title}</h1>
-          <Button asChild size="sm" variant="outline">
-            <Link href={`/${slug}/features/${feature.id}/prd`}>
-              <FileText className="mr-2 size-4" />
-              {hasPrd ? "View PRD" : "Open PRD"}
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <FeatureShipActions
+              workspaceSlug={slug}
+              featureId={feature.id}
+              status={feature.status}
+            />
+            <Button asChild size="sm" variant="outline">
+              <Link href={`/${slug}/features/${feature.id}/prd`}>
+                <FileText className="mr-2 size-4" />
+                {hasPrd ? "View PRD" : "Open PRD"}
+              </Link>
+            </Button>
+          </div>
         </div>
         <Badge variant={statusVariant(feature.status)}>{statusLabel[feature.status]}</Badge>
       </header>

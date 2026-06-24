@@ -4,6 +4,7 @@ import { ExternalLink, ShieldAlert, ShieldCheck } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ApprovalActions } from "@/components/reviews/approval-actions";
 import { RerunReviewButton } from "@/components/reviews/rerun-review-button";
 import { requireWorkspace } from "@/lib/auth";
 import { prisma } from "@forge-ai/db";
@@ -96,6 +97,19 @@ export default async function ReviewPage({ params }: Props) {
           <RerunReviewButton workspaceSlug={slug} pullRequestId={review.pullRequest.id} />
         </div>
       </header>
+
+      <Card className="border-emerald-300/20 bg-emerald-500/5">
+        <CardHeader>
+          <CardTitle className="text-base">Human decision</CardTitle>
+          <CardDescription className="text-slate-400">
+            Approve to mark the linked task done, or request changes to send feedback back to the
+            author.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ApprovalActions workspaceSlug={slug} pullRequestId={review.pullRequest.id} />
+        </CardContent>
+      </Card>
 
       <Card className="border-white/10 bg-slate-900/50">
         <CardHeader>
