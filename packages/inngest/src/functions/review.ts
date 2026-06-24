@@ -136,6 +136,24 @@ export const reviewPullRequest = inngest.createFunction(
       return review;
     });
 
+    await step.run("debit-credit", async () => {
+      const last = await prisma.creditLedger.findFirst({
+        where: { workspaceId: pr.workspaceId },
+        orderBy: { createdAt: "desc" },
+      });
+      const balance = last?.balance ?? 0;
+      await prisma.creditLedger.create({
+        data: {
+          workspaceId: pr.workspaceId,
+          event: "REVIEW_RUN",
+          delta: -1,
+          balance: balance - 1,
+          reason: `AI review on PR #${pr.number}`,
+        },
+      });
+      return { balance: balance - 1 };
+    });
+
     await step.run("comment-on-pr", async () => {
       if (!hasGitHubAuth()) return { skipped: true };
       try {

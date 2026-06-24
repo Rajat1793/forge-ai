@@ -9,6 +9,7 @@
   "dependencies": {
     "@forge-ai/ai": "workspace:*",
     "@forge-ai/auth": "workspace:*",
+    "@forge-ai/billing": "workspace:*",
     "@forge-ai/db": "workspace:*",
     "@forge-ai/github": "workspace:*",
     "@forge-ai/inngest": "workspace:*",
