@@ -12,6 +12,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css}\"",
     "db:generate": "turbo run db:generate",
     "db:push": "turbo run db:push",
+    "db:seed": "pnpm --filter @forge-ai/db db:seed",
     "db:studio": "pnpm --filter @forge-ai/db db:studio"
   },
   "devDependencies": {
