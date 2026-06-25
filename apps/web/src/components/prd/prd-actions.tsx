@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Sparkles, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc/client";
@@ -20,12 +21,20 @@ export function PRDActions({
   const router = useRouter();
   const generate = trpc.prd.generate.useMutation({
     onSuccess() {
+      toast.success("PRD generation queued");
       setTimeout(() => router.refresh(), 1500);
+    },
+    onError(err) {
+      toast.error(err.message);
     },
   });
   const approve = trpc.prd.approve.useMutation({
     onSuccess() {
+      toast.success("PRD approved — generating tasks…");
       router.refresh();
+    },
+    onError(err) {
+      toast.error(err.message);
     },
   });
 

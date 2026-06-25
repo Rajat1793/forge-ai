@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { RotateCw } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc/client";
@@ -16,7 +17,11 @@ export function RerunReviewButton({
   const router = useRouter();
   const rerun = trpc.review.rerun.useMutation({
     onSuccess() {
+      toast.success("Review re-queued");
       setTimeout(() => router.refresh(), 1500);
+    },
+    onError(err) {
+      toast.error(err.message);
     },
   });
 

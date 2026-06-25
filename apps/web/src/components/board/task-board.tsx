@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc/client";
@@ -50,6 +51,10 @@ export function TaskBoard({
 
   const update = trpc.task.updateStatus.useMutation({
     onSuccess() {
+      startTransition(() => router.refresh());
+    },
+    onError(err) {
+      toast.error(err.message);
       startTransition(() => router.refresh());
     },
   });

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,11 +28,13 @@ export function NewFeatureForm({
 
   const create = trpc.feature.create.useMutation({
     onSuccess(feature) {
+      toast.success("Feature request submitted — AI is running discovery…");
       router.push(`/${workspaceSlug}/features/${feature.id}`);
       router.refresh();
     },
     onError(err) {
       setError(err.message);
+      toast.error(err.message);
     },
   });
 

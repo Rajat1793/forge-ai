@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Rocket, XCircle } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc/client";
@@ -18,12 +19,20 @@ export function FeatureShipActions({
   const router = useRouter();
   const ship = trpc.approval.shipFeature.useMutation({
     onSuccess() {
+      toast.success("🚀 Release queued — great work!");
       setTimeout(() => router.refresh(), 1000);
+    },
+    onError(err) {
+      toast.error(err.message);
     },
   });
   const reject = trpc.approval.rejectFeature.useMutation({
     onSuccess() {
+      toast.success("Feature request rejected");
       router.refresh();
+    },
+    onError(err) {
+      toast.error(err.message);
     },
   });
 

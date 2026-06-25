@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Bot, User } from "lucide-react";
+import { toast } from "sonner";
 import type { FeatureRequestStatus } from "@forge-ai/db";
 
 import { Button } from "@/components/ui/button";
@@ -36,10 +37,17 @@ export function ClarifyThread({
       setBody("");
       router.refresh();
     },
+    onError(err) {
+      toast.error(err.message);
+    },
   });
   const markReady = trpc.feature.markReadyForPrd.useMutation({
     onSuccess() {
+      toast.success("Marked ready for PRD");
       router.refresh();
+    },
+    onError(err) {
+      toast.error(err.message);
     },
   });
 

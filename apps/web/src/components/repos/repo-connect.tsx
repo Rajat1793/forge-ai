@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Github, Loader2, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   Dialog,
@@ -31,8 +32,12 @@ export function RepoConnect({
   );
   const connect = trpc.repository.connect.useMutation({
     onSuccess() {
+      toast.success("Repository connected");
       setOpen(false);
       router.refresh();
+    },
+    onError(err) {
+      toast.error(err.message);
     },
   });
 

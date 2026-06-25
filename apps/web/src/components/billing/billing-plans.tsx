@@ -4,6 +4,7 @@ import Script from "next/script";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Check, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,12 +45,20 @@ export function BillingPlans({
   const createOrder = trpc.billing.createOrder.useMutation();
   const confirm = trpc.billing.confirmPayment.useMutation({
     onSuccess() {
+      toast.success("Plan upgraded — credits granted");
       router.refresh();
+    },
+    onError(err) {
+      toast.error(err.message);
     },
   });
   const cancel = trpc.billing.cancel.useMutation({
     onSuccess() {
+      toast.success("Subscription will cancel at the end of the current period");
       router.refresh();
+    },
+    onError(err) {
+      toast.error(err.message);
     },
   });
 
@@ -94,7 +103,8 @@ export function BillingPlans({
         theme: { color: "#10b981" },
       });
       rzp.open();
-    } catch {
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Checkout failed");
       setPending(null);
     }
   };

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, MessageSquareWarning } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   Dialog,
@@ -29,14 +30,22 @@ export function ApprovalActions({
 
   const approve = trpc.approval.approvePullRequest.useMutation({
     onSuccess() {
+      toast.success("PR approved");
       router.refresh();
+    },
+    onError(err) {
+      toast.error(err.message);
     },
   });
   const requestChanges = trpc.approval.requestChanges.useMutation({
     onSuccess() {
+      toast.success("Feedback posted to the PR");
       setOpen(false);
       setNote("");
       router.refresh();
+    },
+    onError(err) {
+      toast.error(err.message);
     },
   });
 
