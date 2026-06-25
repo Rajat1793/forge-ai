@@ -60,4 +60,63 @@ export const workspaceRouter = router({
         orderBy: { createdAt: "asc" },
       });
     }),
+
+  rename: workspaceProcedure
+    .input(
+      z.object({
+        workspaceSlug: z.string(),
+        name: z.string().min(2).max(60),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.role !== "OWNER" && ctx.role !== "ADMIN") {
+        throw new Error("Only owners and admins can rename the workspace.");
+      }
+      return ctx.prisma.workspace.update({
+        where: { id: ctx.workspace.id },
+        data: { name: input.name },
+      });
+    }),
+
+  invite: workspaceProcedure
+    .input(
+      z.object({
+        workspaceSlug: z.string(),
+        email: z.string().email(),
+        role: z.enum(["ADMIN", "MEMBER", "REVIEWER"]).default("MEMBER"),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.role !== "OWNER" && ctx.role !== "ADMIN") {
+        throw new Error("Only owners and admins can invite members.");
+      }
+      const token = `inv_${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      return ctx.prisma.invite.create({
+        data: {
+          workspaceId: ctx.workspace.id,
+          invitedById: ctx.user.id,
+          email: input.email,
+          role: input.role,
+          token,
+          expiresAt,
+        },
+      });
+    }),
+
+  invites: workspaceProcedure
+    .input(z.object({ workspaceSlug: z.string() }))
+    .query(async ({ ctx }) => {
+      return ctx.prisma.invite.findMany({
+        where: { workspaceId: ctx.workspace.id, acceptedAt: null },
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          expiresAt: true,
+          createdAt: true,
+        },
+      });
+    }),
 });
