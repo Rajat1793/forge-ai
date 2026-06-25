@@ -187,24 +187,24 @@ export default async function DashboardPage({ params }: Props) {
     <div className="space-y-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm uppercase tracking-[0.3em] text-emerald-300/80">
+          <p className="text-sm uppercase tracking-[0.3em] text-brand/80">
             {workspace.name}
           </p>
           <h1 className="mt-2 text-3xl font-semibold">Delivery control center</h1>
-          <p className="mt-2 max-w-2xl text-sm text-slate-400">
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
             Feature requests, PRDs, tasks, repos, AI reviews, and approvals — all in one workspace.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link
             href={`/${slug}/features/new`}
-            className="inline-flex items-center gap-2 rounded-md bg-emerald-400 px-4 py-2 text-sm font-medium text-slate-950 transition-colors hover:bg-emerald-300"
+            className="inline-flex items-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition-all hover:brightness-110"
           >
             <Sparkles className="size-4" /> New feature request
           </Link>
           <Link
             href={`/${slug}/board`}
-            className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-slate-100 transition-colors hover:bg-white/10"
+            className="inline-flex items-center gap-2 rounded-md border border-border bg-secondary px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Open board
           </Link>
@@ -214,11 +214,11 @@ export default async function DashboardPage({ params }: Props) {
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {stats.map((s) => (
           <Link key={s.label} href={s.href}>
-            <Card className="border-white/10 bg-slate-900/50 transition-colors hover:border-emerald-300/30 hover:bg-slate-900/80">
+            <Card className="border-border bg-secondary transition-colors hover:border-brand/40 hover:bg-accent/80">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <CardDescription className="text-slate-400">{s.label}</CardDescription>
-                  <s.icon className="size-4 text-slate-500" />
+                  <CardDescription className="text-muted-foreground">{s.label}</CardDescription>
+                  <s.icon className="size-4 text-muted-foreground" />
                 </div>
                 <CardTitle className="text-4xl font-semibold">{s.value}</CardTitle>
               </CardHeader>
@@ -228,12 +228,12 @@ export default async function DashboardPage({ params }: Props) {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <Card className="border-white/10 bg-slate-900/50">
+        <Card className="border-border bg-secondary">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <FileText className="size-4 text-emerald-300" /> Pipeline by status
+              <FileText className="size-4 text-brand" /> Pipeline by status
             </CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardDescription className="text-muted-foreground">
               Feature requests grouped by current workflow stage.
             </CardDescription>
           </CardHeader>
@@ -247,12 +247,12 @@ export default async function DashboardPage({ params }: Props) {
                   return (
                     <div key={status} className="space-y-1">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-300">{STATUS_LABEL[status] ?? status}</span>
-                        <span className="text-slate-500">{count}</span>
+                        <span className="text-muted-foreground">{STATUS_LABEL[status] ?? status}</span>
+                        <span className="text-muted-foreground">{count}</span>
                       </div>
-                      <div className="h-1.5 overflow-hidden rounded-full bg-white/5">
+                      <div className="h-1.5 overflow-hidden rounded-full bg-secondary">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-300"
+                          className="h-full rounded-full bg-brand"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
@@ -270,12 +270,12 @@ export default async function DashboardPage({ params }: Props) {
           </CardContent>
         </Card>
 
-        <Card className="border-white/10 bg-slate-900/50">
+        <Card className="border-border bg-secondary">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <CreditCard className="size-4 text-emerald-300" /> Credits & plan
+              <CreditCard className="size-4 text-brand" /> Credits & plan
             </CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardDescription className="text-muted-foreground">
               {plan.name} plan · {plan.reviewsPerMonth} reviews / month
             </CardDescription>
           </CardHeader>
@@ -283,29 +283,29 @@ export default async function DashboardPage({ params }: Props) {
             <div>
               <div className="flex items-baseline justify-between">
                 <span className="text-3xl font-semibold">{creditBalance}</span>
-                <span className="text-xs text-slate-500">credits left</span>
+                <span className="text-xs text-muted-foreground">credits left</span>
               </div>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/5">
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-secondary">
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-400 to-indigo-400"
+                  className="h-full bg-brand"
                   style={{ width: `${creditUsedPct}%` }}
                 />
               </div>
-              <p className="mt-2 text-xs text-slate-500">{creditUsedPct}% used this period</p>
+              <p className="mt-2 text-xs text-muted-foreground">{creditUsedPct}% used this period</p>
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <p className="text-xs uppercase tracking-wider text-slate-500">Members</p>
+                <p className="text-xs uppercase tracking-wider text-muted-foreground">Members</p>
                 <p className="mt-1 font-semibold">{memberCount}</p>
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wider text-slate-500">Open tasks</p>
+                <p className="text-xs uppercase tracking-wider text-muted-foreground">Open tasks</p>
                 <p className="mt-1 font-semibold">{taskOpen}</p>
               </div>
             </div>
             <Link
               href={`/${slug}/billing`}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/15 bg-white/5 py-2 text-sm font-medium text-slate-100 transition-colors hover:bg-white/10"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-secondary py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
             >
               Manage billing <ArrowRight className="size-4" />
             </Link>
@@ -314,10 +314,10 @@ export default async function DashboardPage({ params }: Props) {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-3">
-        <Card className="border-white/10 bg-slate-900/50">
+        <Card className="border-border bg-secondary">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <Lightbulb className="size-4 text-emerald-300" /> Recent features
+              <Lightbulb className="size-4 text-brand" /> Recent features
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -333,7 +333,7 @@ export default async function DashboardPage({ params }: Props) {
                   <li key={f.id} className="flex items-start justify-between gap-3">
                     <Link
                       href={`/${slug}/features/${f.id}`}
-                      className="line-clamp-1 text-slate-200 hover:text-white"
+                      className="line-clamp-1 text-foreground hover:text-foreground"
                     >
                       {f.title}
                     </Link>
@@ -347,10 +347,10 @@ export default async function DashboardPage({ params }: Props) {
           </CardContent>
         </Card>
 
-        <Card className="border-white/10 bg-slate-900/50">
+        <Card className="border-border bg-secondary">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <GitPullRequest className="size-4 text-emerald-300" /> Open PR queue
+              <GitPullRequest className="size-4 text-brand" /> Open PR queue
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -364,10 +364,10 @@ export default async function DashboardPage({ params }: Props) {
               <ul className="space-y-3 text-sm">
                 {recentPRs.map((pr) => (
                   <li key={pr.id} className="flex items-start justify-between gap-3">
-                    <span className="line-clamp-1 text-slate-200">
-                      <span className="text-slate-500">#{pr.number}</span> {pr.title}
+                    <span className="line-clamp-1 text-foreground">
+                      <span className="text-muted-foreground">#{pr.number}</span> {pr.title}
                     </span>
-                    <span className="shrink-0 text-xs text-slate-500">
+                    <span className="shrink-0 text-xs text-muted-foreground">
                       {formatRelative(pr.updatedAt)}
                     </span>
                   </li>
@@ -377,10 +377,10 @@ export default async function DashboardPage({ params }: Props) {
           </CardContent>
         </Card>
 
-        <Card className="border-white/10 bg-slate-900/50">
+        <Card className="border-border bg-secondary">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <CheckCircle2 className="size-4 text-emerald-300" /> Latest AI reviews
+              <CheckCircle2 className="size-4 text-brand" /> Latest AI reviews
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -396,13 +396,13 @@ export default async function DashboardPage({ params }: Props) {
                   <li key={r.id} className="flex items-start justify-between gap-3">
                     <Link
                       href={`/${slug}/reviews/${r.id}`}
-                      className="line-clamp-1 text-slate-200 hover:text-white"
+                      className="line-clamp-1 text-foreground hover:text-foreground"
                     >
                       {r.pullRequest
                         ? `#${r.pullRequest.number} ${r.pullRequest.title}`
                         : "AI review"}
                     </Link>
-                    <span className="shrink-0 text-xs text-slate-500">
+                    <span className="shrink-0 text-xs text-muted-foreground">
                       <Clock className="mr-1 inline size-3" />
                       {formatRelative(r.createdAt)}
                     </span>
@@ -416,19 +416,19 @@ export default async function DashboardPage({ params }: Props) {
 
       {awaitingApproval > 0 ? (
         <section>
-          <Card className="border-emerald-300/30 bg-emerald-300/5">
+          <Card className="border-brand/30 bg-brand/5">
             <CardContent className="flex flex-wrap items-center justify-between gap-3 p-5">
               <div>
-                <p className="text-sm font-medium text-emerald-100">
+                <p className="text-sm font-medium text-brand">
                   {awaitingApproval} feature{awaitingApproval === 1 ? "" : "s"} awaiting your approval
                 </p>
-                <p className="mt-1 text-xs text-emerald-200/80">
+                <p className="mt-1 text-xs text-brand/80">
                   Review the AI sign-off and ship when ready.
                 </p>
               </div>
               <Link
                 href={`/${slug}/features`}
-                className="inline-flex items-center gap-2 rounded-md bg-emerald-400 px-4 py-2 text-sm font-medium text-slate-950 transition-colors hover:bg-emerald-300"
+                className="inline-flex items-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition-all hover:brightness-110"
               >
                 Review now <ArrowRight className="size-4" />
               </Link>
@@ -450,13 +450,13 @@ function EmptyState({
   cta?: { href: string; label: string };
 }) {
   return (
-    <div className="rounded-lg border border-dashed border-white/10 bg-white/5 p-5 text-center">
-      <p className="text-sm font-medium text-slate-200">{title}</p>
-      <p className="mt-1 text-xs text-slate-400">{body}</p>
+    <div className="rounded-lg border border-dashed border-border bg-secondary p-5 text-center">
+      <p className="text-sm font-medium text-foreground">{title}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{body}</p>
       {cta ? (
         <Link
           href={cta.href}
-          className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-emerald-300 hover:underline"
+          className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-brand hover:underline"
         >
           {cta.label} <ArrowRight className="size-3" />
         </Link>

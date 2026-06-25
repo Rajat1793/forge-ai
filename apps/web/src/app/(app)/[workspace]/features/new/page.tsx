@@ -18,14 +18,14 @@ export default async function NewFeaturePage({ params }: Props) {
     <div className="mx-auto max-w-2xl space-y-6">
       <header>
         <h1 className="text-2xl font-semibold">New feature request</h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <p className="mt-1 text-sm text-muted-foreground">
           The AI will read it, decide if it needs clarifying questions, and post them back here.
         </p>
       </header>
-      <Card className="border-white/10 bg-slate-900/50">
+      <Card className="border-border bg-secondary">
         <CardHeader>
           <CardTitle>Tell us what to build</CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardDescription className="text-muted-foreground">
             Short title, then a paragraph or two of context.
           </CardDescription>
         </CardHeader>

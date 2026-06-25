@@ -119,8 +119,8 @@ export function BillingPlans({
             <Card
               key={p.key}
               className={cn(
-                "border-white/10 bg-slate-900/50",
-                active && "border-emerald-300/40 bg-emerald-500/5",
+                "border-border bg-secondary",
+                active && "border-brand/40 bg-brand/5",
               )}
             >
               <CardHeader>
@@ -128,16 +128,16 @@ export function BillingPlans({
                   <CardTitle className="text-base">{p.name}</CardTitle>
                   {active ? <Badge variant="success">Current</Badge> : null}
                 </div>
-                <CardDescription className="text-slate-300">
-                  <span className="text-2xl font-semibold text-white">₹{p.priceInr}</span>
-                  <span className="text-slate-400"> / month</span>
+                <CardDescription className="text-muted-foreground">
+                  <span className="text-2xl font-semibold text-foreground">₹{p.priceInr}</span>
+                  <span className="text-muted-foreground"> / month</span>
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <ul className="space-y-2 text-sm text-slate-200">
+                <ul className="space-y-2 text-sm text-foreground">
                   {p.highlights.map((h) => (
                     <li key={h} className="flex items-start gap-2">
-                      <Check className="mt-0.5 size-4 shrink-0 text-emerald-300" />
+                      <Check className="mt-0.5 size-4 shrink-0 text-brand" />
                       <span>{h}</span>
                     </li>
                   ))}

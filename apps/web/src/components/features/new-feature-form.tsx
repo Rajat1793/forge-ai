@@ -53,7 +53,7 @@ export function NewFeatureForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="title" className="text-slate-200">Title</Label>
+        <Label htmlFor="title" className="text-foreground">Title</Label>
         <Input
           id="title"
           required
@@ -62,11 +62,11 @@ export function NewFeatureForm({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Add Slack notifications when a review completes"
-          className="border-white/10 bg-slate-900/60 text-slate-100"
+          className="border-border bg-secondary text-foreground"
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="description" className="text-slate-200">Description</Label>
+        <Label htmlFor="description" className="text-foreground">Description</Label>
         <Textarea
           id="description"
           required
@@ -75,18 +75,18 @@ export function NewFeatureForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Context, user persona, expected behaviour…"
-          className="border-white/10 bg-slate-900/60 text-slate-100"
+          className="border-border bg-secondary text-foreground"
         />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         {projects.length > 1 ? (
           <div className="space-y-2">
-            <Label htmlFor="project" className="text-slate-200">Project</Label>
+            <Label htmlFor="project" className="text-foreground">Project</Label>
             <select
               id="project"
               value={projectId}
               onChange={(e) => setProjectId(e.target.value)}
-              className="h-10 w-full rounded-md border border-white/10 bg-slate-900/60 px-3 text-sm text-slate-100"
+              className="h-10 w-full rounded-md border border-border bg-secondary px-3 text-sm text-foreground"
             >
               {projects.map((p) => (
                 <option key={p.id} value={p.id}>{p.name}</option>
@@ -95,12 +95,12 @@ export function NewFeatureForm({
           </div>
         ) : null}
         <div className="space-y-2">
-          <Label htmlFor="source" className="text-slate-200">Source</Label>
+          <Label htmlFor="source" className="text-foreground">Source</Label>
           <select
             id="source"
             value={source}
             onChange={(e) => setSource(e.target.value as typeof source)}
-            className="h-10 w-full rounded-md border border-white/10 bg-slate-900/60 px-3 text-sm text-slate-100"
+            className="h-10 w-full rounded-md border border-border bg-secondary px-3 text-sm text-foreground"
           >
             <option value="MANUAL">Manual</option>
             <option value="EMAIL">Email</option>

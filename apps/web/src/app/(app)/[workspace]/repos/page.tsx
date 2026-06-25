@@ -25,7 +25,7 @@ export default async function ReposPage({ params }: Props) {
       <header className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-semibold">Repositories</h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             Link GitHub repositories so Forge AI can review pull requests automatically.
           </p>
         </div>
@@ -45,10 +45,10 @@ export default async function ReposPage({ params }: Props) {
       ) : null}
 
       {repos.length === 0 ? (
-        <Card className="border-dashed border-white/10 bg-slate-900/30">
+        <Card className="border-dashed border-border bg-secondary">
           <CardHeader>
             <CardTitle className="text-base">No repositories connected</CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardDescription className="text-muted-foreground">
               Connect a repository to start receiving pull request events.
             </CardDescription>
           </CardHeader>
@@ -56,7 +56,7 @@ export default async function ReposPage({ params }: Props) {
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {repos.map((r) => (
-            <Card key={r.id} className="border-white/10 bg-slate-900/50">
+            <Card key={r.id} className="border-border bg-secondary">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base">
@@ -64,12 +64,12 @@ export default async function ReposPage({ params }: Props) {
                   </CardTitle>
                   <Badge variant="outline">{r.defaultBranch}</Badge>
                 </div>
-                <CardDescription className="text-slate-400">
+                <CardDescription className="text-muted-foreground">
                   Connected {new Date(r.installedAt).toLocaleDateString()}
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex items-center justify-between text-sm">
-                <span className="text-slate-300">{r._count.pullRequests} PRs tracked</span>
+                <span className="text-muted-foreground">{r._count.pullRequests} PRs tracked</span>
                 <Button asChild size="sm" variant="outline">
                   <Link href={`/${slug}/reviews`}>View reviews</Link>
                 </Button>

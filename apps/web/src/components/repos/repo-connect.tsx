@@ -57,7 +57,7 @@ export function RepoConnect({
           </DialogDescription>
         </DialogHeader>
         {available.isLoading ? (
-          <div className="flex items-center gap-2 text-sm text-slate-400">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="size-4 animate-spin" />
             Loading repos…
           </div>
@@ -66,10 +66,10 @@ export function RepoConnect({
             {available.data.map((r) => (
               <li
                 key={r.id}
-                className="flex items-center justify-between rounded-md border border-white/10 bg-slate-950/50 px-3 py-2 text-sm"
+                className="flex items-center justify-between rounded-md border border-border bg-card px-3 py-2 text-sm"
               >
                 <span className="flex items-center gap-2">
-                  <Github className="size-4 text-slate-400" />
+                  <Github className="size-4 text-muted-foreground" />
                   {r.owner}/{r.name}
                 </span>
                 <Button
@@ -92,7 +92,7 @@ export function RepoConnect({
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             No repositories returned. Make sure your GitHub token has <code>repo</code> scope.
           </p>
         )}

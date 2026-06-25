@@ -21,30 +21,30 @@ const eventVariant = (e: Entry["event"]) =>
 export function CreditHistory({ entries }: { entries: Entry[] }) {
   if (entries.length === 0) {
     return (
-      <p className="text-sm text-slate-400">
+      <p className="text-sm text-muted-foreground">
         No credit activity yet. Upgrade or run an AI review to see entries here.
       </p>
     );
   }
   return (
-    <ul className="divide-y divide-white/5">
+    <ul className="divide-y divide-border">
       {entries.map((e) => (
         <li key={e.id} className="flex items-center justify-between gap-3 py-2 text-sm">
           <div className="flex items-center gap-2">
             <Badge variant={eventVariant(e.event)}>{e.event.replace("_", " ")}</Badge>
-            <span className="text-slate-200">{e.reason ?? "—"}</span>
+            <span className="text-foreground">{e.reason ?? "—"}</span>
           </div>
-          <div className="flex items-center gap-4 text-xs text-slate-400">
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <span
               className={
-                e.delta >= 0 ? "font-mono text-emerald-300" : "font-mono text-rose-300"
+                e.delta >= 0 ? "font-mono text-brand" : "font-mono text-destructive"
               }
             >
               {e.delta >= 0 ? "+" : ""}
               {e.delta}
             </span>
-            <span className="font-mono text-slate-500">bal {e.balance}</span>
-            <span className="text-slate-500">{new Date(e.createdAt).toLocaleString()}</span>
+            <span className="font-mono text-muted-foreground">bal {e.balance}</span>
+            <span className="text-muted-foreground">{new Date(e.createdAt).toLocaleString()}</span>
           </div>
         </li>
       ))}

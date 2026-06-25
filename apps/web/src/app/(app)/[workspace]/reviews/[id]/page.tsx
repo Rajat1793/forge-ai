@@ -48,14 +48,14 @@ export default async function ReviewPage({ params }: Props) {
       <header className="space-y-3">
         <Link
           href={`/${slug}/reviews`}
-          className="text-xs uppercase tracking-wider text-slate-400 hover:text-slate-200"
+          className="text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground"
         >
           ← All reviews
         </Link>
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-2">
             <h1 className="text-2xl font-semibold">{review.pullRequest.title}</h1>
-            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               <span>
                 {review.pullRequest.repository.owner}/{review.pullRequest.repository.name}#
                 {review.pullRequest.number}
@@ -68,7 +68,7 @@ export default async function ReviewPage({ params }: Props) {
                 href={review.pullRequest.htmlUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="ml-1 flex items-center gap-1 text-slate-300 hover:text-emerald-300"
+                className="ml-1 flex items-center gap-1 text-muted-foreground hover:text-brand"
               >
                 Open on GitHub <ExternalLink className="size-3" />
               </a>
@@ -89,7 +89,7 @@ export default async function ReviewPage({ params }: Props) {
               </Badge>
               <Badge variant="outline">{coverage}% PRD coverage</Badge>
               <Badge variant="secondary">{review.modelName}</Badge>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-muted-foreground">
                 {(review.durationMs / 1000).toFixed(1)}s
               </span>
             </div>
@@ -98,10 +98,10 @@ export default async function ReviewPage({ params }: Props) {
         </div>
       </header>
 
-      <Card className="border-emerald-300/20 bg-emerald-500/5">
+      <Card className="border-brand/20 bg-brand/5">
         <CardHeader>
           <CardTitle className="text-base">Human decision</CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardDescription className="text-muted-foreground">
             Approve to mark the linked task done, or request changes to send feedback back to the
             author.
           </CardDescription>
@@ -111,50 +111,50 @@ export default async function ReviewPage({ params }: Props) {
         </CardContent>
       </Card>
 
-      <Card className="border-white/10 bg-slate-900/50">
+      <Card className="border-border bg-secondary">
         <CardHeader>
           <CardTitle className="text-base">Summary</CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardDescription className="text-muted-foreground">
             {new Date(review.createdAt).toLocaleString()}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="whitespace-pre-wrap text-sm leading-7 text-slate-200">
+          <p className="whitespace-pre-wrap text-sm leading-7 text-foreground">
             {review.overallSummary}
           </p>
         </CardContent>
       </Card>
 
-      <Card className="border-white/10 bg-slate-900/50">
+      <Card className="border-border bg-secondary">
         <CardHeader>
           <CardTitle className="text-base">Issues ({review.issues.length})</CardTitle>
         </CardHeader>
         <CardContent>
           {review.issues.length === 0 ? (
-            <p className="text-sm text-slate-400">No issues raised. 🎉</p>
+            <p className="text-sm text-muted-foreground">No issues raised. 🎉</p>
           ) : (
             <ul className="space-y-3">
               {review.issues.map((i) => (
                 <li
                   key={i.id}
-                  className="rounded-md border border-white/5 bg-slate-950/40 p-4"
+                  className="rounded-md border border-border bg-card p-4"
                 >
                   <div className="mb-2 flex flex-wrap items-center gap-2">
                     <Badge variant={severityVariant(i.severity)}>{i.severity}</Badge>
                     <Badge variant={categoryVariant(i.category)}>{i.category}</Badge>
                     {i.file ? (
-                      <code className="rounded bg-white/5 px-1.5 py-0.5 text-[11px] text-slate-300">
+                      <code className="rounded bg-secondary px-1.5 py-0.5 text-[11px] text-muted-foreground">
                         {i.file}
                         {i.line ? `:${i.line}` : ""}
                       </code>
                     ) : null}
                   </div>
-                  <p className="text-sm font-medium text-slate-100">{i.title}</p>
-                  <p className="mt-1 whitespace-pre-wrap text-sm text-slate-300">
+                  <p className="text-sm font-medium text-foreground">{i.title}</p>
+                  <p className="mt-1 whitespace-pre-wrap text-sm text-muted-foreground">
                     {i.description}
                   </p>
                   {i.suggestion ? (
-                    <pre className="mt-2 overflow-x-auto rounded bg-black/40 p-2 text-xs text-emerald-200">
+                    <pre className="mt-2 overflow-x-auto rounded bg-black/40 p-2 text-xs text-brand">
                       {i.suggestion}
                     </pre>
                   ) : null}
@@ -166,7 +166,7 @@ export default async function ReviewPage({ params }: Props) {
       </Card>
 
       {review.pullRequest.files.length > 0 ? (
-        <Card className="border-white/10 bg-slate-900/50">
+        <Card className="border-border bg-secondary">
           <CardHeader>
             <CardTitle className="text-base">
               Files changed ({review.pullRequest.files.length})
@@ -177,12 +177,12 @@ export default async function ReviewPage({ params }: Props) {
               {review.pullRequest.files.map((f) => (
                 <li
                   key={f.id}
-                  className="flex items-center justify-between rounded px-2 py-1 text-slate-300 hover:bg-white/5"
+                  className="flex items-center justify-between rounded px-2 py-1 text-muted-foreground hover:bg-accent"
                 >
                   <code className="truncate text-xs">{f.filename}</code>
-                  <span className="text-[11px] text-slate-500">
-                    <span className="text-emerald-300">+{f.additions}</span>{" "}
-                    <span className="text-rose-300">-{f.deletions}</span>
+                  <span className="text-[11px] text-muted-foreground">
+                    <span className="text-brand">+{f.additions}</span>{" "}
+                    <span className="text-destructive">-{f.deletions}</span>
                   </span>
                 </li>
               ))}

@@ -34,17 +34,17 @@ export default async function BillingPage({ params }: Props) {
     <div className="space-y-6">
       <header>
         <h1 className="text-3xl font-semibold">Billing</h1>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Manage your plan, AI review credits, and Razorpay subscription.
         </p>
       </header>
 
-      <Card className="border-white/10 bg-slate-900/50">
+      <Card className="border-border bg-secondary">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-base">Current plan</CardTitle>
-              <CardDescription className="text-slate-400">
+              <CardDescription className="text-muted-foreground">
                 {sub?.currentPeriodEnd
                   ? `Renews ${new Date(sub.currentPeriodEnd).toLocaleDateString()}`
                   : "No active subscription"}
@@ -59,18 +59,18 @@ export default async function BillingPage({ params }: Props) {
         <CardContent>
           <div className="space-y-3">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-300">AI review credits</span>
-              <span className="font-mono text-slate-100">
+              <span className="text-muted-foreground">AI review credits</span>
+              <span className="font-mono text-foreground">
                 {balance} / {plan.reviewsPerMonth}
               </span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-white/5">
+            <div className="h-2 overflow-hidden rounded-full bg-secondary">
               <div
-                className="h-full rounded-full bg-emerald-400/70"
+                className="h-full rounded-full bg-brand/70"
                 style={{ width: `${Math.round(usageRatio * 100)}%` }}
               />
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-muted-foreground">
               Each AI review on a pull request consumes 1 credit. Credits refresh on every
               successful billing cycle.
             </p>
@@ -85,10 +85,10 @@ export default async function BillingPage({ params }: Props) {
         razorpayConfigured={hasRazorpayConfig()}
       />
 
-      <Card className="border-white/10 bg-slate-900/50">
+      <Card className="border-border bg-secondary">
         <CardHeader>
           <CardTitle className="text-base">Credit history</CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardDescription className="text-muted-foreground">
             Recent grants, purchases, and AI review usage.
           </CardDescription>
         </CardHeader>

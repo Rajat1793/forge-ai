@@ -53,17 +53,17 @@ export function WorkspaceMembers({
   return (
     <div className="space-y-6">
       <div>
-        <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500">
+        <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
           <ShieldCheck className="size-3.5" /> Members
         </div>
-        <ul className="divide-y divide-white/5 overflow-hidden rounded-md border border-white/10 bg-slate-950/40">
+        <ul className="divide-y divide-border overflow-hidden rounded-md border border-border bg-card">
           {members.map((m) => (
             <li key={m.id} className="flex items-center justify-between px-4 py-3 text-sm">
               <div>
-                <p className="font-medium text-slate-100">
+                <p className="font-medium text-foreground">
                   {m.user.name ?? m.user.email}
                 </p>
-                <p className="text-xs text-slate-500">{m.user.email}</p>
+                <p className="text-xs text-muted-foreground">{m.user.email}</p>
               </div>
               <Badge
                 variant={m.role === "OWNER" ? "success" : "secondary"}
@@ -78,15 +78,15 @@ export function WorkspaceMembers({
 
       {invites.length > 0 ? (
         <div>
-          <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500">
+          <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
             <Mail className="size-3.5" /> Pending invites
           </div>
-          <ul className="divide-y divide-white/5 overflow-hidden rounded-md border border-white/10 bg-slate-950/40">
+          <ul className="divide-y divide-border overflow-hidden rounded-md border border-border bg-card">
             {invites.map((i) => (
               <li key={i.id} className="flex items-center justify-between px-4 py-3 text-sm">
                 <div>
-                  <p className="font-medium text-slate-100">{i.email}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="font-medium text-foreground">{i.email}</p>
+                  <p className="text-xs text-muted-foreground">
                     Expires {new Date(i.expiresAt).toLocaleDateString()}
                   </p>
                 </div>
@@ -109,7 +109,7 @@ export function WorkspaceMembers({
           className="grid gap-3 sm:grid-cols-[1fr_auto_auto]"
         >
           <div className="space-y-1.5">
-            <Label htmlFor="invite-email" className="text-xs uppercase tracking-wider text-slate-500">
+            <Label htmlFor="invite-email" className="text-xs uppercase tracking-wider text-muted-foreground">
               Invite by email
             </Label>
             <Input
@@ -119,18 +119,18 @@ export function WorkspaceMembers({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="teammate@company.com"
-              className="border-white/10 bg-slate-950/60 text-slate-100"
+              className="border-border bg-card text-foreground"
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="invite-role" className="text-xs uppercase tracking-wider text-slate-500">
+            <Label htmlFor="invite-role" className="text-xs uppercase tracking-wider text-muted-foreground">
               Role
             </Label>
             <select
               id="invite-role"
               value={role}
               onChange={(e) => setRole(e.target.value as typeof role)}
-              className="h-10 rounded-md border border-white/10 bg-slate-950/60 px-3 text-sm text-slate-100"
+              className="h-10 rounded-md border border-border bg-card px-3 text-sm text-foreground"
             >
               <option value="MEMBER">Member</option>
               <option value="ADMIN">Admin</option>
@@ -145,7 +145,7 @@ export function WorkspaceMembers({
           </div>
         </form>
       ) : (
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-muted-foreground">
           Only owners and admins can invite new members.
         </p>
       )}

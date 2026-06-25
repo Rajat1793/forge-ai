@@ -31,16 +31,16 @@ export default async function ReviewsPage({ params }: Props) {
     <div className="space-y-6">
       <header>
         <h1 className="text-3xl font-semibold">AI reviews</h1>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Every pull request gets an automated PRD-aware review before a human takes a look.
         </p>
       </header>
 
       {reviews.length === 0 ? (
-        <Card className="border-dashed border-white/10 bg-slate-900/30">
+        <Card className="border-dashed border-border bg-secondary">
           <CardHeader>
             <CardTitle className="text-base">No reviews yet</CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardDescription className="text-muted-foreground">
               Open a pull request against a connected repository to trigger the first review.
             </CardDescription>
           </CardHeader>
@@ -55,11 +55,11 @@ export default async function ReviewsPage({ params }: Props) {
               <li key={r.id}>
                 <Link
                   href={`/${slug}/reviews/${r.id}`}
-                  className="block rounded-lg border border-white/10 bg-slate-900/50 p-4 transition hover:border-emerald-300/30"
+                  className="block rounded-lg border border-border bg-secondary p-4 transition hover:border-brand/40"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 space-y-1">
-                      <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-400">
+                      <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
                         <GitPullRequest className="size-3.5" />
                         <span>
                           {r.pullRequest.repository.owner}/{r.pullRequest.repository.name}#
@@ -68,11 +68,11 @@ export default async function ReviewsPage({ params }: Props) {
                         <span>·</span>
                         <span>{new Date(r.createdAt).toLocaleString()}</span>
                       </div>
-                      <h3 className="truncate text-base font-medium text-slate-100">
+                      <h3 className="truncate text-base font-medium text-foreground">
                         {r.pullRequest.title}
                       </h3>
                       {r.pullRequest.feature ? (
-                        <p className="text-xs text-slate-400">
+                        <p className="text-xs text-muted-foreground">
                           ← {r.pullRequest.feature.title}
                         </p>
                       ) : null}
@@ -96,14 +96,14 @@ export default async function ReviewsPage({ params }: Props) {
                       <Badge variant="outline">{coverage}% PRD coverage</Badge>
                     </div>
                   </div>
-                  <p className="mt-3 line-clamp-2 text-sm text-slate-300">{r.overallSummary}</p>
-                  <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
+                  <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{r.overallSummary}</p>
+                  <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
                     <a
                       href={r.pullRequest.htmlUrl}
                       target="_blank"
                       rel="noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="flex items-center gap-1 hover:text-slate-300"
+                      className="flex items-center gap-1 hover:text-muted-foreground"
                     >
                       View PR on GitHub <ExternalLink className="size-3" />
                     </a>

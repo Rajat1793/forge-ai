@@ -68,7 +68,7 @@ export function TaskBoard({
 
   if (cards.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-white/10 bg-slate-900/30 p-10 text-center text-sm text-slate-400">
+      <div className="rounded-lg border border-dashed border-border bg-secondary p-10 text-center text-sm text-muted-foreground">
         No tasks yet. Approve a PRD and tasks will appear here.
       </div>
     );
@@ -86,13 +86,13 @@ export function TaskBoard({
               if (dragId) move(dragId, col.id);
               setDragId(null);
             }}
-            className="flex min-h-[300px] flex-col rounded-lg border border-white/10 bg-slate-900/30 p-3"
+            className="flex min-h-[300px] flex-col rounded-lg border border-border bg-secondary p-3"
           >
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {col.label}
               </h2>
-              <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px] text-slate-400">
+              <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-muted-foreground">
                 {colCards.length}
               </span>
             </div>
@@ -103,20 +103,20 @@ export function TaskBoard({
                   draggable
                   onDragStart={() => setDragId(c.id)}
                   className={cn(
-                    "cursor-grab rounded-md border border-white/10 bg-slate-950/60 p-3 text-sm shadow-sm transition hover:border-emerald-300/30",
+                    "cursor-grab rounded-md border border-border bg-card p-3 text-sm shadow-sm transition hover:border-brand/40",
                     dragId === c.id && "opacity-50",
                   )}
                 >
                   <div className="mb-2 flex items-center justify-between gap-2">
                     <Badge variant={typeColor[c.type] as never}>{c.type}</Badge>
                     {c.estimateHours != null ? (
-                      <span className="text-[10px] text-slate-500">{c.estimateHours}h</span>
+                      <span className="text-[10px] text-muted-foreground">{c.estimateHours}h</span>
                     ) : null}
                   </div>
-                  <p className="font-medium leading-snug text-slate-100">{c.title}</p>
+                  <p className="font-medium leading-snug text-foreground">{c.title}</p>
                   <Link
                     href={`/${workspaceSlug}/features/${c.featureId}`}
-                    className="mt-2 line-clamp-1 block text-[11px] text-slate-400 hover:text-slate-200"
+                    className="mt-2 line-clamp-1 block text-[11px] text-muted-foreground hover:text-foreground"
                   >
                     {c.featureTitle}
                   </Link>
@@ -126,7 +126,7 @@ export function TaskBoard({
                         key={x.id}
                         type="button"
                         onClick={() => move(c.id, x.id)}
-                        className="rounded-sm border border-white/10 px-1.5 py-0.5 text-[10px] text-slate-400 hover:border-emerald-300/40 hover:text-emerald-200"
+                        className="rounded-sm border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground hover:border-brand/40 hover:text-brand"
                       >
                         → {x.label}
                       </button>

@@ -18,7 +18,7 @@ export default async function BoardPage({ params }: Props) {
     <div className="space-y-6">
       <header>
         <h1 className="text-3xl font-semibold">Board</h1>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Tasks generated from approved PRDs. Drag-free for now — click a column tag to move.
         </p>
       </header>

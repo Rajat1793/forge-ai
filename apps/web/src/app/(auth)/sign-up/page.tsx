@@ -7,18 +7,18 @@ export const metadata = { title: "Sign up · Forge AI" };
 
 export default function SignUpPage() {
   return (
-    <Card className="w-full max-w-md border-white/10 bg-slate-950/60 text-slate-100 backdrop-blur">
+    <Card className="w-full max-w-md border-border bg-card text-foreground backdrop-blur">
       <CardHeader>
         <CardTitle className="text-2xl">Create your account</CardTitle>
-        <CardDescription className="text-slate-400">
+        <CardDescription className="text-muted-foreground">
           Start your AI delivery workflow in under a minute.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <SignUpForm />
-        <p className="mt-6 text-center text-sm text-slate-400">
+        <p className="mt-6 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/sign-in" className="font-medium text-emerald-300 hover:underline">
+          <Link href="/sign-in" className="font-medium text-brand hover:underline">
             Sign in
           </Link>
         </p>

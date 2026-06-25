@@ -38,7 +38,7 @@ export default async function PrdPage({ params }: Props) {
         <div className="space-y-2">
           <Link
             href={`/${slug}/features/${feature.id}`}
-            className="text-xs uppercase tracking-wider text-slate-400 hover:text-slate-200"
+            className="text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground"
           >
             ← Back to feature
           </Link>
@@ -60,37 +60,37 @@ export default async function PrdPage({ params }: Props) {
       </header>
 
       {!latest ? (
-        <Card className="border-dashed border-white/10 bg-slate-900/30">
+        <Card className="border-dashed border-border bg-secondary">
           <CardHeader>
             <CardTitle className="text-base">No PRD yet</CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardDescription className="text-muted-foreground">
               Generate the first draft once discovery is complete.
             </CardDescription>
           </CardHeader>
         </Card>
       ) : (
         <div className="space-y-6">
-          <Card className="border-white/10 bg-slate-900/50">
+          <Card className="border-border bg-secondary">
             <CardHeader>
               <CardTitle className="text-base">Problem statement</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="whitespace-pre-wrap text-sm leading-7 text-slate-200">
+              <p className="whitespace-pre-wrap text-sm leading-7 text-foreground">
                 {latest.problemStatement}
               </p>
             </CardContent>
           </Card>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <Card className="border-white/10 bg-slate-900/50">
+            <Card className="border-border bg-secondary">
               <CardHeader>
                 <CardTitle className="text-base">Goals</CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2 text-sm text-slate-200">
+                <ul className="space-y-2 text-sm text-foreground">
                   {latest.goals.map((g, i) => (
                     <li key={i} className="flex gap-2">
-                      <span className="text-emerald-300">→</span>
+                      <span className="text-brand">→</span>
                       <span>{g}</span>
                     </li>
                   ))}
@@ -98,18 +98,18 @@ export default async function PrdPage({ params }: Props) {
               </CardContent>
             </Card>
 
-            <Card className="border-white/10 bg-slate-900/50">
+            <Card className="border-border bg-secondary">
               <CardHeader>
                 <CardTitle className="text-base">Non-goals</CardTitle>
               </CardHeader>
               <CardContent>
                 {latest.nonGoals.length === 0 ? (
-                  <p className="text-sm text-slate-500">None.</p>
+                  <p className="text-sm text-muted-foreground">None.</p>
                 ) : (
-                  <ul className="space-y-2 text-sm text-slate-200">
+                  <ul className="space-y-2 text-sm text-foreground">
                     {latest.nonGoals.map((g, i) => (
                       <li key={i} className="flex gap-2">
-                        <span className="text-rose-300">×</span>
+                        <span className="text-destructive">×</span>
                         <span>{g}</span>
                       </li>
                     ))}
@@ -119,7 +119,7 @@ export default async function PrdPage({ params }: Props) {
             </Card>
           </div>
 
-          <Card className="border-white/10 bg-slate-900/50">
+          <Card className="border-border bg-secondary">
             <CardHeader>
               <CardTitle className="text-base">User stories</CardTitle>
             </CardHeader>
@@ -127,30 +127,30 @@ export default async function PrdPage({ params }: Props) {
               {(latest.userStories as unknown as UserStory[]).map((s, i) => (
                 <div
                   key={i}
-                  className="rounded-md border border-white/5 bg-slate-950/40 p-3 text-sm leading-6 text-slate-200"
+                  className="rounded-md border border-border bg-card p-3 text-sm leading-6 text-foreground"
                 >
-                  <span className="font-medium text-emerald-200">As a {s.persona}</span>, I want{" "}
-                  <span className="text-slate-100">{s.iWant}</span> so that{" "}
-                  <span className="text-slate-300">{s.soThat}</span>.
+                  <span className="font-medium text-brand">As a {s.persona}</span>, I want{" "}
+                  <span className="text-foreground">{s.iWant}</span> so that{" "}
+                  <span className="text-muted-foreground">{s.soThat}</span>.
                 </div>
               ))}
             </CardContent>
           </Card>
 
-          <Card className="border-white/10 bg-slate-900/50">
+          <Card className="border-border bg-secondary">
             <CardHeader>
               <CardTitle className="text-base">Acceptance criteria</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {(latest.acceptanceCriteria as unknown as AC[]).map((ac, i) => (
-                <div key={i} className="rounded-md border border-white/5 bg-slate-950/40 p-3 text-sm leading-6">
-                  <p className="text-slate-300">
+                <div key={i} className="rounded-md border border-border bg-card p-3 text-sm leading-6">
+                  <p className="text-muted-foreground">
                     <span className="text-amber-200">Given</span> {ac.given}
                   </p>
-                  <p className="text-slate-300">
+                  <p className="text-muted-foreground">
                     <span className="text-amber-200">When</span> {ac.when}
                   </p>
-                  <p className="text-slate-300">
+                  <p className="text-muted-foreground">
                     <span className="text-amber-200">Then</span> {ac.then}
                   </p>
                 </div>
@@ -159,15 +159,15 @@ export default async function PrdPage({ params }: Props) {
           </Card>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <Card className="border-white/10 bg-slate-900/50">
+            <Card className="border-border bg-secondary">
               <CardHeader>
                 <CardTitle className="text-base">Edge cases</CardTitle>
               </CardHeader>
               <CardContent>
                 {latest.edgeCases.length === 0 ? (
-                  <p className="text-sm text-slate-500">None captured.</p>
+                  <p className="text-sm text-muted-foreground">None captured.</p>
                 ) : (
-                  <ul className="list-disc space-y-1 pl-5 text-sm text-slate-200">
+                  <ul className="list-disc space-y-1 pl-5 text-sm text-foreground">
                     {latest.edgeCases.map((e, i) => (
                       <li key={i}>{e}</li>
                     ))}
@@ -175,12 +175,12 @@ export default async function PrdPage({ params }: Props) {
                 )}
               </CardContent>
             </Card>
-            <Card className="border-white/10 bg-slate-900/50">
+            <Card className="border-border bg-secondary">
               <CardHeader>
                 <CardTitle className="text-base">Success metrics</CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="list-disc space-y-1 pl-5 text-sm text-slate-200">
+                <ul className="list-disc space-y-1 pl-5 text-sm text-foreground">
                   {latest.successMetrics.map((m, i) => (
                     <li key={i}>{m}</li>
                   ))}

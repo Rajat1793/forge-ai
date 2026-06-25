@@ -36,20 +36,20 @@ export default async function SettingsPage({ params }: Props) {
   return (
     <div className="space-y-8">
       <header>
-        <p className="text-sm uppercase tracking-[0.3em] text-emerald-300/80">
+        <p className="text-sm uppercase tracking-[0.3em] text-brand/80">
           Settings
         </p>
         <h1 className="mt-2 text-3xl font-semibold">{workspace.name}</h1>
-        <p className="mt-2 text-sm text-slate-400">
+        <p className="mt-2 text-sm text-muted-foreground">
           Manage workspace details, members, and integrations.
         </p>
       </header>
 
-      <Card className="border-white/10 bg-slate-900/50">
+      <Card className="border-border bg-secondary">
         <CardHeader>
           <CardTitle className="text-base">Workspace details</CardTitle>
-          <CardDescription className="text-slate-400">
-            Slug <code className="text-emerald-300">{workspace.slug}</code> · created{" "}
+          <CardDescription className="text-muted-foreground">
+            Slug <code className="text-brand">{workspace.slug}</code> · created{" "}
             {new Date(workspace.createdAt).toLocaleDateString()}
           </CardDescription>
         </CardHeader>
@@ -62,10 +62,10 @@ export default async function SettingsPage({ params }: Props) {
         </CardContent>
       </Card>
 
-      <Card className="border-white/10 bg-slate-900/50">
+      <Card className="border-border bg-secondary">
         <CardHeader>
           <CardTitle className="text-base">Members & invites</CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardDescription className="text-muted-foreground">
             {memberships.length} member{memberships.length === 1 ? "" : "s"} · {invites.length} pending invite{invites.length === 1 ? "" : "s"}
           </CardDescription>
         </CardHeader>

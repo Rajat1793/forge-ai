@@ -36,7 +36,7 @@ export function OnboardingForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="ws-name" className="text-slate-200">Workspace name</Label>
+        <Label htmlFor="ws-name" className="text-foreground">Workspace name</Label>
         <Input
           id="ws-name"
           required
@@ -44,7 +44,7 @@ export function OnboardingForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Acme Inc."
-          className="border-white/10 bg-slate-900/60 text-slate-100"
+          className="border-border bg-secondary text-foreground"
         />
       </div>
       {error ? <p className="text-sm text-red-400">{error}</p> : null}

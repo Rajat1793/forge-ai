@@ -57,7 +57,7 @@ export function ClarifyThread({
   return (
     <div className="space-y-4">
       {initial.length === 0 ? (
-        <p className="rounded-md border border-dashed border-white/10 bg-slate-950/40 p-4 text-sm text-slate-400">
+        <p className="rounded-md border border-dashed border-border bg-card p-4 text-sm text-muted-foreground">
           Waiting for the AI to triage this request…
         </p>
       ) : (
@@ -66,25 +66,25 @@ export function ClarifyThread({
             <li
               key={m.id}
               className={cn(
-                "flex gap-3 rounded-md border border-white/10 bg-slate-950/50 p-4",
-                m.author === "AI" ? "border-emerald-300/20" : "border-white/10",
+                "flex gap-3 rounded-md border border-border bg-card p-4",
+                m.author === "AI" ? "border-brand/20" : "border-border",
               )}
             >
               <div
                 className={cn(
                   "grid size-8 shrink-0 place-items-center rounded-full text-xs",
                   m.author === "AI"
-                    ? "bg-emerald-500/20 text-emerald-200"
-                    : "bg-slate-700/50 text-slate-200",
+                    ? "bg-brand/20 text-brand"
+                    : "bg-secondary text-foreground",
                 )}
               >
                 {m.author === "AI" ? <Bot className="size-4" /> : <User className="size-4" />}
               </div>
               <div className="flex-1">
-                <p className="text-xs uppercase tracking-wider text-slate-400">
+                <p className="text-xs uppercase tracking-wider text-muted-foreground">
                   {m.author === "AI" ? "Forge AI" : "You"} · {new Date(m.createdAt).toLocaleString()}
                 </p>
-                <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-100">{m.body}</p>
+                <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-foreground">{m.body}</p>
               </div>
             </li>
           ))}
@@ -105,7 +105,7 @@ export function ClarifyThread({
             onChange={(e) => setBody(e.target.value)}
             placeholder="Reply with the missing details…"
             rows={4}
-            className="border-white/10 bg-slate-950/60 text-slate-100"
+            className="border-border bg-card text-foreground"
           />
           <div className="flex items-center justify-between">
             <Button
@@ -114,7 +114,7 @@ export function ClarifyThread({
               size="sm"
               disabled={markReady.isPending || status === "READY_FOR_PRD"}
               onClick={() => markReady.mutate({ workspaceSlug, featureId })}
-              className="text-slate-300 hover:text-white"
+              className="text-muted-foreground hover:text-foreground"
             >
               {status === "READY_FOR_PRD" ? "Ready for PRD" : "Mark ready for PRD"}
             </Button>

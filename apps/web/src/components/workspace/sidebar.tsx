@@ -29,9 +29,9 @@ export function WorkspaceSidebar({ slug }: { slug: string }) {
   const pathname = usePathname();
   const base = `/${slug}`;
   return (
-    <aside className="hidden w-60 shrink-0 border-r border-white/10 bg-slate-950/80 px-4 py-6 md:flex md:flex-col">
+    <aside className="hidden w-60 shrink-0 border-r border-border bg-card px-4 py-6 md:flex md:flex-col">
       <div className="mb-8 flex items-center gap-2 px-2 text-lg font-semibold">
-        <Sparkles className="size-5 text-emerald-300" />
+        <Sparkles className="size-5 text-brand" />
         Forge AI
       </div>
       <nav className="space-y-1">
@@ -46,8 +46,8 @@ export function WorkspaceSidebar({ slug }: { slug: string }) {
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
                 active
-                  ? "bg-emerald-500/15 text-emerald-200"
-                  : "text-slate-300 hover:bg-white/5 hover:text-white",
+                  ? "bg-brand/15 text-brand"
+                  : "text-muted-foreground hover:bg-accent hover:text-foreground",
               )}
             >
               <Icon className="size-4" />

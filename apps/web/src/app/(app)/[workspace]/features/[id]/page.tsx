@@ -32,7 +32,7 @@ export default async function FeaturePage({ params }: Props) {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <header className="space-y-3">
-        <div className="flex items-center gap-3 text-xs uppercase tracking-wider text-slate-400">
+        <div className="flex items-center gap-3 text-xs uppercase tracking-wider text-muted-foreground">
           <span>{feature.project.name}</span>
           <span>·</span>
           <span>{feature.source}</span>
@@ -56,24 +56,24 @@ export default async function FeaturePage({ params }: Props) {
         <Badge variant={statusVariant(feature.status)}>{statusLabel[feature.status]}</Badge>
       </header>
 
-      <Card className="border-white/10 bg-slate-900/50">
+      <Card className="border-border bg-secondary">
         <CardHeader>
           <CardTitle className="text-base">Original description</CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardDescription className="text-muted-foreground">
             Submitted {new Date(feature.createdAt).toLocaleString()}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="whitespace-pre-wrap text-sm leading-7 text-slate-200">
+          <p className="whitespace-pre-wrap text-sm leading-7 text-foreground">
             {feature.description}
           </p>
         </CardContent>
       </Card>
 
-      <Card className="border-white/10 bg-slate-900/50">
+      <Card className="border-border bg-secondary">
         <CardHeader>
           <CardTitle className="text-base">Discovery conversation</CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardDescription className="text-muted-foreground">
             AI clarifying questions and your replies.
           </CardDescription>
         </CardHeader>
@@ -92,10 +92,10 @@ export default async function FeaturePage({ params }: Props) {
         </CardContent>
 
       {feature.tasks.length > 0 ? (
-        <Card className="border-white/10 bg-slate-900/50">
+        <Card className="border-border bg-secondary">
           <CardHeader>
             <CardTitle className="text-base">Tasks ({feature.tasks.length})</CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardDescription className="text-muted-foreground">
               Engineering breakdown from the approved PRD.
             </CardDescription>
           </CardHeader>
@@ -104,13 +104,13 @@ export default async function FeaturePage({ params }: Props) {
               {feature.tasks.map((t) => (
                 <li
                   key={t.id}
-                  className="flex items-center justify-between gap-3 rounded-md border border-white/5 bg-slate-950/40 px-3 py-2 text-sm"
+                  className="flex items-center justify-between gap-3 rounded-md border border-border bg-card px-3 py-2 text-sm"
                 >
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">{t.type}</Badge>
-                    <span className="text-slate-100">{t.title}</span>
+                    <span className="text-foreground">{t.title}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     {t.estimateHours != null ? <span>{t.estimateHours}h</span> : null}
                     <Badge variant="secondary">{t.status.toLowerCase().replace("_", " ")}</Badge>
                   </div>

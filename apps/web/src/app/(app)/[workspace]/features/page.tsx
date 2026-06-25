@@ -25,7 +25,7 @@ export default async function FeaturesPage({ params }: Props) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Feature requests</h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-muted-foreground">
             Every idea your team is shaping into a shippable feature.
           </p>
         </div>
@@ -37,10 +37,10 @@ export default async function FeaturesPage({ params }: Props) {
       </div>
 
       {features.length === 0 ? (
-        <Card className="border-white/10 bg-slate-900/50">
+        <Card className="border-border bg-secondary">
           <CardHeader>
             <CardTitle>No feature requests yet</CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardDescription className="text-muted-foreground">
               Capture one to kick off discovery, PRD, tasks, code, and review.
             </CardDescription>
           </CardHeader>
@@ -51,9 +51,9 @@ export default async function FeaturesPage({ params }: Props) {
           </CardContent>
         </Card>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-white/10">
-          <table className="min-w-full divide-y divide-white/10 text-sm">
-            <thead className="bg-slate-900/60 text-left text-xs uppercase tracking-wider text-slate-400">
+        <div className="overflow-hidden rounded-lg border border-border">
+          <table className="min-w-full divide-y divide-border text-sm">
+            <thead className="bg-secondary text-left text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
                 <th className="px-4 py-3">Title</th>
                 <th className="px-4 py-3">Project</th>
@@ -63,22 +63,22 @@ export default async function FeaturesPage({ params }: Props) {
                 <th className="px-4 py-3 text-right" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10 bg-slate-950/60">
+            <tbody className="divide-y divide-border bg-card">
               {features.map((f) => (
-                <tr key={f.id} className="hover:bg-white/5">
+                <tr key={f.id} className="hover:bg-accent">
                   <td className="px-4 py-3 font-medium">{f.title}</td>
-                  <td className="px-4 py-3 text-slate-400">{f.project.name}</td>
-                  <td className="px-4 py-3 text-slate-400">{f.source}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{f.project.name}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{f.source}</td>
                   <td className="px-4 py-3">
                     <Badge variant={statusVariant(f.status)}>{statusLabel[f.status]}</Badge>
                   </td>
-                  <td className="px-4 py-3 text-slate-400">
+                  <td className="px-4 py-3 text-muted-foreground">
                     {new Date(f.updatedAt).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <Link
                       href={`/${slug}/features/${f.id}`}
-                      className="inline-flex items-center gap-1 text-emerald-300 hover:underline"
+                      className="inline-flex items-center gap-1 text-brand hover:underline"
                     >
                       Open <ArrowRight className="size-3.5" />
                     </Link>

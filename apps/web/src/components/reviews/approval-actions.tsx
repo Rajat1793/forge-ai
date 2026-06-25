@@ -78,7 +78,7 @@ export function ApprovalActions({
             onChange={(e) => setNote(e.target.value)}
             placeholder="What needs to change?"
             rows={5}
-            className="border-white/10 bg-slate-950/60 text-slate-100"
+            className="border-border bg-card text-foreground"
           />
           <div className="flex justify-end">
             <Button

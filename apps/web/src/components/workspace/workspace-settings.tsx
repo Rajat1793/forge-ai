@@ -41,7 +41,7 @@ export function WorkspaceSettings({
       className="flex flex-col gap-3 sm:flex-row sm:items-end"
     >
       <div className="flex-1 space-y-2">
-        <Label htmlFor="ws-name" className="text-slate-200">
+        <Label htmlFor="ws-name" className="text-foreground">
           Display name
         </Label>
         <Input
@@ -51,7 +51,7 @@ export function WorkspaceSettings({
           disabled={!canEdit || rename.isPending}
           minLength={2}
           maxLength={60}
-          className="border-white/10 bg-slate-950/60 text-slate-100"
+          className="border-border bg-card text-foreground"
         />
       </div>
       <Button

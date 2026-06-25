@@ -21,7 +21,7 @@ export default async function WorkspaceLayout({ children, params }: Props) {
 
   return (
     <TRPCProvider>
-      <div className="flex min-h-screen bg-slate-950 text-slate-100">
+      <div className="flex min-h-screen bg-popover text-foreground">
         <WorkspaceSidebar slug={workspace.slug} />
         <div className="flex flex-1 flex-col">
           <WorkspaceTopbar

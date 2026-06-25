@@ -32,7 +32,7 @@ export function SignInForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="email" className="text-slate-200">Email</Label>
+        <Label htmlFor="email" className="text-foreground">Email</Label>
         <Input
           id="email"
           type="email"
@@ -40,11 +40,11 @@ export function SignInForm() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="border-white/10 bg-slate-900/60 text-slate-100"
+          className="border-border bg-secondary text-foreground"
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password" className="text-slate-200">Password</Label>
+        <Label htmlFor="password" className="text-foreground">Password</Label>
         <Input
           id="password"
           type="password"
@@ -53,7 +53,7 @@ export function SignInForm() {
           minLength={8}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="border-white/10 bg-slate-900/60 text-slate-100"
+          className="border-border bg-secondary text-foreground"
         />
       </div>
       {error ? <p className="text-sm text-red-400">{error}</p> : null}

@@ -35,38 +35,38 @@ export function WorkspaceTopbar({
   }
 
   return (
-    <header className="flex items-center justify-between border-b border-white/10 bg-slate-950/80 px-6 py-3 backdrop-blur">
+    <header className="flex items-center justify-between border-b border-border bg-card px-6 py-3 backdrop-blur">
       <div className="relative">
         <button
           onClick={() => setOpen((v) => !v)}
-          className="flex items-center gap-2 rounded-md border border-white/10 bg-slate-900/60 px-3 py-1.5 text-sm hover:bg-slate-900"
+          className="flex items-center gap-2 rounded-md border border-border bg-secondary px-3 py-1.5 text-sm hover:bg-accent"
         >
           <span className="font-medium">{current?.name ?? currentSlug}</span>
-          <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-emerald-200">
+          <span className="rounded-full border border-brand/20 bg-brand/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-brand">
             {role}
           </span>
           <ChevronsUpDown className="size-3.5 opacity-60" />
         </button>
         {open ? (
-          <div className="absolute left-0 top-full z-50 mt-2 w-72 rounded-lg border border-white/10 bg-slate-950/95 p-1 shadow-2xl">
+          <div className="absolute left-0 top-full z-50 mt-2 w-72 rounded-lg border border-border bg-popover p-1 shadow-2xl">
             {workspaces.map((w) => (
               <Link
                 key={w.id}
                 href={`/${w.slug}/dashboard`}
                 onClick={() => setOpen(false)}
                 className={cn(
-                  "flex items-center justify-between rounded-md px-3 py-2 text-sm text-slate-200 hover:bg-white/5",
-                  w.slug === currentSlug && "bg-white/5 text-white",
+                  "flex items-center justify-between rounded-md px-3 py-2 text-sm text-foreground hover:bg-accent",
+                  w.slug === currentSlug && "bg-secondary text-foreground",
                 )}
               >
                 <span>{w.name}</span>
-                {w.slug === currentSlug ? <Check className="size-4 text-emerald-300" /> : null}
+                {w.slug === currentSlug ? <Check className="size-4 text-brand" /> : null}
               </Link>
             ))}
-            <div className="mt-1 border-t border-white/10 pt-1">
+            <div className="mt-1 border-t border-border pt-1">
               <Link
                 href="/onboarding"
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-emerald-300 hover:bg-white/5"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-brand hover:bg-accent"
               >
                 <Plus className="size-4" />
                 New workspace
@@ -79,21 +79,21 @@ export function WorkspaceTopbar({
       <div className="relative">
         <button
           onClick={() => setMenuOpen((v) => !v)}
-          className="flex items-center gap-2 rounded-md border border-white/10 bg-slate-900/60 px-3 py-1.5 text-sm hover:bg-slate-900"
+          className="flex items-center gap-2 rounded-md border border-border bg-secondary px-3 py-1.5 text-sm hover:bg-accent"
         >
-          <span className="hidden text-slate-200 md:inline">{user.name || user.email}</span>
-          <span className="grid size-7 place-items-center rounded-full bg-emerald-500/20 text-emerald-200">
+          <span className="hidden text-foreground md:inline">{user.name || user.email}</span>
+          <span className="grid size-7 place-items-center rounded-full bg-brand/20 text-brand">
             {(user.name || user.email).slice(0, 1).toUpperCase()}
           </span>
         </button>
         {menuOpen ? (
-          <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-lg border border-white/10 bg-slate-950/95 p-1 shadow-2xl">
-            <div className="px-3 py-2 text-xs text-slate-400">{user.email}</div>
+          <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-lg border border-border bg-popover p-1 shadow-2xl">
+            <div className="px-3 py-2 text-xs text-muted-foreground">{user.email}</div>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleSignOut}
-              className="w-full justify-start text-slate-200 hover:bg-white/5"
+              className="w-full justify-start text-foreground hover:bg-accent"
             >
               <LogOut className="size-4" />
               Sign out
