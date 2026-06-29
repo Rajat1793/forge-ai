@@ -23,7 +23,7 @@ services:
     # no migration files; the schema is the source of truth.)
     buildCommand: >-
       corepack enable &&
-      pnpm install --frozen-lockfile=false &&
+      pnpm install --frozen-lockfile=false --prod=false &&
       pnpm --filter @forge-ai/db exec prisma generate &&
       pnpm --filter @forge-ai/db exec prisma db push --skip-generate &&
       pnpm --filter @forge-ai/web build
