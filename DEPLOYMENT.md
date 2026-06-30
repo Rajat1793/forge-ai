@@ -51,7 +51,7 @@ added.
 | Pipeline | Variables | Where to get them |
 | --- | --- | --- |
 | **GitHub sign-in + repo access** | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | github.com/settings/developers → New OAuth App. Callback: `https://forge-ai-web.onrender.com/api/auth/callback/github` |
-| **AI (PRDs / reviews / tasks)** | `OPENAI_API_KEY` | platform.openai.com/api-keys |
+| **AI (PRDs / reviews / tasks)** | `MISTRAL_API_KEY` | console.mistral.ai/api-keys |
 | **Workflow engine** | `INNGEST_EVENT_KEY`, `INNGEST_SIGNING_KEY` | app.inngest.com → Settings → Keys (Production) |
 | **Billing** | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `RAZORPAY_PLAN_PRO`, `RAZORPAY_PLAN_TEAM`, `NEXT_PUBLIC_RAZORPAY_KEY_ID` | dashboard.razorpay.com |
 

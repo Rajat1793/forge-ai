@@ -4,6 +4,7 @@ import { prisma } from "@forge-ai/db";
 import {
   hasAIKey,
   heavyModel,
+  MODEL_HEAVY,
   reviewResultSchema,
   type ReviewResult,
 } from "@forge-ai/ai";
@@ -18,7 +19,7 @@ import { EVENTS, inngest } from "../client";
 
 const fallbackReview = (): ReviewResult => ({
   overallSummary:
-    "AI review skipped — no OPENAI_API_KEY configured. PR is queued for human review.",
+    "AI review skipped — no MISTRAL_API_KEY configured. PR is queued for human review.",
   prdCoverageScore: 0.5,
   readyForHumanReview: true,
   issues: [],
@@ -118,7 +119,7 @@ export const reviewPullRequest = inngest.createFunction(
           overallSummary: result.overallSummary,
           prdCoverageScore: result.prdCoverageScore,
           readyForHumanReview: result.readyForHumanReview,
-          modelName: process.env.OPENAI_MODEL_HEAVY ?? "gpt-4o",
+          modelName: MODEL_HEAVY,
           durationMs: Date.now() - startedAt,
           issues: {
             create: result.issues.map((i) => ({

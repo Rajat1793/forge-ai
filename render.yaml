@@ -70,8 +70,8 @@ services:
       - key: GITHUB_CLIENT_SECRET
         sync: false
 
-      # --- OpenAI (fill in the Render dashboard) ---------------------------
-      - key: OPENAI_API_KEY
+      # --- Mistral AI (fill in the Render dashboard) -----------------------
+      - key: MISTRAL_API_KEY
         sync: false
 
       # --- Inngest (fill in the Render dashboard) --------------------------
