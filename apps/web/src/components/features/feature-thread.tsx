@@ -47,9 +47,9 @@ const GUIDANCE: Record<string, string> = {
   READY_FOR_PRD: "Discovery’s done. Generate the PRD to keep going.",
   PRD_DRAFT: "Review the PRD above. Approve it to plan tasks, or reply with changes.",
   PRD_APPROVED: "Planning the tasks…",
-  TASKS_PLANNED: "Review the tasks, tweak if needed, then generate code.",
-  PLAN_APPROVED: "Review the tasks, tweak if needed, then generate code.",
-  IN_PROGRESS: "Generate code when the tasks look right.",
+  TASKS_PLANNED: "Review the tasks, then generate code — or approve them to ship without it.",
+  PLAN_APPROVED: "Review the tasks, then generate code — or approve them to ship without it.",
+  IN_PROGRESS: "Generate code when the tasks look right — or approve to ship directly.",
   IN_REVIEW: "Forge AI is generating and reviewing the code — progress shows above. This can take a moment; stop it any time.",
   FIX_NEEDED: "Address the issues above, then regenerate the code.",
   READY_FOR_HUMAN: "Looks ready. Approve to lock it in.",
@@ -814,17 +814,25 @@ function Composer({
     }
     if (status === "TASKS_PLANNED" || status === "PLAN_APPROVED" || status === "IN_PROGRESS") {
       list.push({
+        label: "Generate code",
+        icon: <Wand2 className="size-4" />,
+        run: () => genCode.mutate({ workspaceSlug, featureId }),
+        pending: genCode.isPending,
+      });
+      // Tasks are done — let reviewers approve straight away and ship without
+      // running the AI code path (the next state surfaces "Ship / Deploy").
+      list.push({
+        label: "Approve",
+        icon: <CheckCircle2 className="size-4" />,
+        run: () => approveCode.mutate({ workspaceSlug, featureId }),
+        pending: approveCode.isPending,
+      });
+      list.push({
         label: "Regenerate tasks",
         icon: <FileCode className="size-4" />,
         run: () => genTasks.mutate({ workspaceSlug, featureId }),
         pending: genTasks.isPending,
         variant: "outline",
-      });
-      list.push({
-        label: "Generate code",
-        icon: <Wand2 className="size-4" />,
-        run: () => genCode.mutate({ workspaceSlug, featureId }),
-        pending: genCode.isPending,
       });
     }
     if (status === "FIX_NEEDED") {
