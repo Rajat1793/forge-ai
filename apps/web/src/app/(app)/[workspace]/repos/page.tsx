@@ -6,13 +6,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { RepoConnect } from "@/components/repos/repo-connect";
 import { requireWorkspace } from "@/lib/auth";
 import { prisma } from "@forge-ai/db";
-import { hasGitHubAuth } from "@forge-ai/github";
 
 type Props = { params: Promise<{ workspace: string }> };
 
 export default async function ReposPage({ params }: Props) {
   const { workspace: slug } = await params;
-  const { workspace } = await requireWorkspace(slug);
+  const { workspace, user } = await requireWorkspace(slug);
+
+  const githubAccount = await prisma.account.findFirst({
+    where: { userId: user.id, providerId: "github" },
+    select: { accessToken: true },
+  });
+  const githubConnected = Boolean(
+    githubAccount?.accessToken ||
+      process.env.GITHUB_OAUTH_TOKEN ||
+      process.env.GITHUB_APP_PRIVATE_KEY,
+  );
 
   const repos = await prisma.repository.findMany({
     where: { workspaceId: workspace.id },
@@ -29,15 +38,15 @@ export default async function ReposPage({ params }: Props) {
             Link GitHub repositories so Forge AI can review pull requests automatically.
           </p>
         </div>
-        <RepoConnect workspaceSlug={slug} disabled={!hasGitHubAuth()} />
+        <RepoConnect workspaceSlug={slug} disabled={!githubConnected} />
       </header>
 
-      {!hasGitHubAuth() ? (
+      {!githubConnected ? (
         <Card className="border-amber-400/30 bg-amber-400/5">
           <CardHeader>
-            <CardTitle className="text-base text-amber-200">GitHub not configured</CardTitle>
+            <CardTitle className="text-base text-amber-200">GitHub not connected</CardTitle>
             <CardDescription className="text-amber-100/70">
-              Set <code>GITHUB_OAUTH_TOKEN</code> (or install the GitHub App) to fetch your repos.
+              Sign in with GitHub (or set <code>GITHUB_OAUTH_TOKEN</code>) to fetch your repos.
               You can still receive webhooks at <code>/api/webhooks/github</code>.
             </CardDescription>
           </CardHeader>

@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { createGitHubClient, hasGitHubAuth, listRepos } from "@forge-ai/github";
+import { createGitHubClient, listRepos } from "@forge-ai/github";
 
 import { router, workspaceProcedure } from "../trpc";
 
@@ -17,10 +17,15 @@ export const repositoryRouter = router({
 
   available: workspaceProcedure
     .input(z.object({ workspaceSlug: z.string() }))
-    .query(async () => {
-      if (!hasGitHubAuth()) return [];
+    .query(async ({ ctx }) => {
+      const account = await ctx.prisma.account.findFirst({
+        where: { userId: ctx.user.id, providerId: "github" },
+        select: { accessToken: true },
+      });
+      const token = account?.accessToken ?? process.env.GITHUB_OAUTH_TOKEN;
+      if (!token) return [];
       try {
-        const client = createGitHubClient();
+        const client = createGitHubClient(token);
         return await listRepos(client);
       } catch {
         return [];
