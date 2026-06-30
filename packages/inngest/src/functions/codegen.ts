@@ -28,7 +28,50 @@ const fallbackReview = (): DraftReviewPayload => ({
 });
 
 export const generateCode = inngest.createFunction(
-  { id: "code-generate", name: "Generate code draft" },
+  {
+    id: "code-generate",
+    name: "Generate code draft",
+    // Surface failures quickly instead of letting the feature sit in
+    // "In review" through the default 4 retries.
+    retries: 1,
+    // Let the user stop a run: a matching cancel event for the same feature
+    // halts the function mid-flight.
+    cancelOn: [
+      {
+        event: EVENTS.CODE_CANCEL,
+        if: "event.data.featureId == async.data.featureId",
+      },
+    ],
+    // If every attempt fails, don't leave the feature stuck in "In review" —
+    // reset it so the action buttons come back, and tell the user why.
+    onFailure: async ({ event, step }) => {
+      const original = (
+        event.data as { event?: { data?: { featureId?: string } } }
+      ).event;
+      const featureId = original?.data?.featureId;
+      if (!featureId) return;
+      await step.run("reset-after-failure", async () => {
+        const feature = await prisma.featureRequest.findUnique({
+          where: { id: featureId },
+          include: { codeDrafts: { select: { id: true }, take: 1 } },
+        });
+        if (!feature || feature.status !== "IN_REVIEW") return;
+        await prisma.featureRequest.update({
+          where: { id: featureId },
+          data: {
+            status: feature.codeDrafts.length > 0 ? "READY_FOR_HUMAN" : "PLAN_APPROVED",
+          },
+        });
+        await prisma.clarifyMessage.create({
+          data: {
+            featureId,
+            author: "AI",
+            body: "Code generation failed and was stopped. You can try generating again.",
+          },
+        });
+      });
+    },
+  },
   { event: EVENTS.CODE_GENERATE },
   async ({ event, step }) => {
     const featureId = (event.data as { featureId: string }).featureId;
@@ -46,6 +89,17 @@ export const generateCode = inngest.createFunction(
       }),
     );
     if (!feature) return { skipped: true, reason: "not-found" };
+
+    // Progress: surface what's happening in the thread as we go.
+    await step.run("progress-drafting", () =>
+      prisma.clarifyMessage.create({
+        data: {
+          featureId: feature.id,
+          author: "AI",
+          body: `Drafting the implementation from ${feature.tasks.length} task(s)…`,
+        },
+      }),
+    );
 
     const version = feature.prds[0]?.versions[0] ?? null;
 
@@ -68,6 +122,16 @@ export const generateCode = inngest.createFunction(
       });
       return object;
     });
+
+    await step.run("progress-reviewing", () =>
+      prisma.clarifyMessage.create({
+        data: {
+          featureId: feature.id,
+          author: "AI",
+          body: `Draft ready (${draft.filesChanged} file(s) changed). Reviewing it against the PRD…`,
+        },
+      }),
+    );
 
     const review = await step.run("ai-review-code", async () => {
       if (!hasAIKey()) return fallbackReview();

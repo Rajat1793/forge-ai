@@ -11,6 +11,7 @@ export const EVENTS = {
   PRD_GENERATE: "prd/generate.requested",
   TASKS_GENERATE: "tasks/generate.requested",
   CODE_GENERATE: "code/generate.requested",
+  CODE_CANCEL: "code/generate.cancelled",
   PR_REVIEW: "pr/ai_review.requested",
   RELEASE_SHIP: "release/ship.requested",
 } as const;

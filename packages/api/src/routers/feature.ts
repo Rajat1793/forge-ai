@@ -211,6 +211,41 @@ export const featureRouter = router({
       return { ok: true };
     }),
 
+  cancelGeneration: workspaceProcedure
+    .input(z.object({ workspaceSlug: z.string(), featureId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const feature = await ctx.prisma.featureRequest.findFirst({
+        where: { id: input.featureId, workspaceId: ctx.workspace.id },
+        include: { codeDrafts: { select: { id: true }, take: 1 } },
+      });
+      if (!feature) throw new TRPCError({ code: "NOT_FOUND" });
+      if (feature.status !== "IN_REVIEW")
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Nothing is generating right now.",
+        });
+      // Stop the in-flight Inngest run for this feature.
+      await inngest.send({
+        name: EVENTS.CODE_CANCEL,
+        data: { featureId: feature.id },
+      });
+      // Reset to a state that offers the action buttons again.
+      await ctx.prisma.featureRequest.update({
+        where: { id: feature.id },
+        data: {
+          status: feature.codeDrafts.length > 0 ? "READY_FOR_HUMAN" : "PLAN_APPROVED",
+        },
+      });
+      await ctx.prisma.clarifyMessage.create({
+        data: {
+          featureId: feature.id,
+          author: "AI",
+          body: "Code generation stopped. You can generate again whenever you're ready.",
+        },
+      });
+      return { ok: true };
+    }),
+
   approveCode: workspaceProcedure
     .input(z.object({ workspaceSlug: z.string(), featureId: z.string() }))
     .mutation(async ({ ctx, input }) => {

@@ -12,6 +12,7 @@ import {
   Plus,
   Rocket,
   Sparkles,
+  StopCircle,
   Trash2,
   User,
   Wand2,
@@ -49,7 +50,7 @@ const GUIDANCE: Record<string, string> = {
   TASKS_PLANNED: "Review the tasks, tweak if needed, then generate code.",
   PLAN_APPROVED: "Review the tasks, tweak if needed, then generate code.",
   IN_PROGRESS: "Generate code when the tasks look right.",
-  IN_REVIEW: "Forge AI is reviewing the draft…",
+  IN_REVIEW: "Forge AI is generating and reviewing the code — progress shows above. This can take a moment; stop it any time.",
   FIX_NEEDED: "Address the issues above, then regenerate the code.",
   READY_FOR_HUMAN: "Looks ready. Approve to lock it in.",
   APPROVED: "All set — ship it to deploy and generate release notes.",
@@ -765,6 +766,13 @@ function Composer({
     },
     onError: fail,
   });
+  const cancelGen = trpc.feature.cancelGeneration.useMutation({
+    onSuccess() {
+      toast.success("Generation stopped");
+      onChange();
+    },
+    onError: fail,
+  });
 
   const terminal = TERMINAL.has(status);
 
@@ -869,6 +877,21 @@ function Composer({
           <Sparkles className="size-3.5 text-brand" />
           {GUIDANCE[status]}
         </p>
+      ) : null}
+      {status === "IN_REVIEW" ? (
+        <Button
+          size="sm"
+          variant="destructive"
+          disabled={cancelGen.isPending}
+          onClick={() => cancelGen.mutate({ workspaceSlug, featureId })}
+        >
+          {cancelGen.isPending ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <StopCircle className="size-4" />
+          )}
+          Stop generation
+        </Button>
       ) : null}
       {actions.length > 0 ? (
         <div className="flex flex-wrap gap-2">
