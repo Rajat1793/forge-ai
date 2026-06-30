@@ -1,4 +1,5 @@
 import {
+  Activity,
   ArrowRight,
   ArrowUp,
   CheckCircle2,
@@ -7,6 +8,7 @@ import {
   ListTodo,
   Rocket,
   Sparkles,
+  Wand2,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -14,12 +16,12 @@ import { planList } from "@forge-ai/billing";
 
 const phases = [
   { name: "Request", body: "Drop a one-line idea. No forms, no ceremony." },
-  { name: "Discovery", body: "The agent clarifies scope and flags duplicates." },
-  { name: "PRD", body: "Structured goals, stories, acceptance criteria." },
-  { name: "Tasks", body: "Auto-broken into a kanban-ready board." },
-  { name: "Code", body: "Drafts the diff against the PRD, not just lint." },
-  { name: "Review", body: "AI reads the change for gaps and risks." },
-  { name: "Ship", body: "You approve. It ships with a full audit trail." },
+  { name: "Discovery", body: "The agent clarifies scope in two questions max, and flags duplicates." },
+  { name: "PRD", body: "Structured goals, stories, acceptance criteria — regenerate any time." },
+  { name: "Tasks", body: "Auto-broken into a kanban-ready board you can edit." },
+  { name: "Code", body: "Drafts the diff against the PRD, streaming progress as it works." },
+  { name: "Review", body: "AI reads the change for gaps, security and risks." },
+  { name: "Ship", body: "Approve from the board or after review. It ships with an audit trail." },
 ];
 
 const features = [
@@ -31,17 +33,27 @@ const features = [
   {
     icon: ListTodo,
     title: "Plan → tasks → board",
-    body: "Approved PRDs explode into prioritized tasks on a drag-and-drop board, ready for engineers — or the agent — to pick up.",
+    body: "Approved PRDs explode into prioritized tasks on a drag-and-drop board, ready for engineers — or the agent — to pick up and edit.",
+  },
+  {
+    icon: Wand2,
+    title: "Code drafted against the PRD",
+    body: "Forge AI writes a focused diff that implements the tasks — measured for PRD coverage, not just linted.",
+  },
+  {
+    icon: Activity,
+    title: "Live progress, full control",
+    body: "Every step streams into the thread as it happens. Changed your mind? Stop any run mid-flight and pick up where you left off — nothing gets stuck.",
   },
   {
     icon: GitPullRequest,
     title: "PR-aware AI reviews",
-    body: "Forge AI reads every diff against the PRD and posts contextual review comments — coverage, security, edge cases, quality.",
+    body: "Forge AI reads every diff against the PRD and flags coverage gaps, security, edge cases and quality — with suggested fixes.",
   },
   {
     icon: Rocket,
-    title: "Approve & ship",
-    body: "Humans stay on the release gate. One click ships with release notes generated and a trace from request to merge.",
+    title: "Approve & ship, your way",
+    body: "Ship straight from the task board, or after an AI code review. One click ships with release notes generated and a trace from request to release.",
   },
 ];
 
@@ -51,12 +63,14 @@ const transcript = [
   { role: "agent", kind: "thinking", text: "Got it — scoping this now. No blocking questions." },
   { role: "agent", kind: "prd", text: "PRD drafted · 3 goals · 5 acceptance criteria" },
   { role: "agent", kind: "tasks", text: "8 tasks planned · Schema · Webhook · Slack client · QA" },
+  { role: "agent", kind: "code", text: "Drafting code… reviewing the diff against the PRD" },
   { role: "agent", kind: "review", text: "Code reviewed · 1 suggestion · PRD coverage 96%" },
+  { role: "agent", kind: "ship", text: "Approved & shipped · release notes generated" },
 ];
 
 const proof = [
   { label: "Idea → shipped", value: "1 thread" },
-  { label: "Agent handoffs", value: "6" },
+  { label: "Pipeline stages", value: "7" },
   { label: "Integrations", value: "GitHub · Razorpay" },
   { label: "Built on", value: "Next.js · tRPC · Inngest" },
 ];
@@ -390,7 +404,9 @@ function TranscriptRow({
   const icon =
     kind === "prd" ? <FileText className="size-3.5" />
       : kind === "tasks" ? <ListTodo className="size-3.5" />
+      : kind === "code" ? <Wand2 className="size-3.5" />
       : kind === "review" ? <GitPullRequest className="size-3.5" />
+      : kind === "ship" ? <Rocket className="size-3.5" />
       : <Sparkles className="size-3.5" />;
 
   return (
