@@ -703,7 +703,22 @@ function Composer({
   onChange: () => void;
 }) {
   const [body, setBody] = useState("");
+  // Optimistic "working" lock: the action mutations only enqueue a background
+  // job and resolve instantly, so we keep the clicked button (and its siblings)
+  // in a working/disabled state until the server advances the feature's status.
+  const [pendingAction, setPendingAction] = useState<string | null>(null);
   const status = feature.status;
+
+  // Once the status transitions, the relevant action set changes — release the
+  // lock so the new buttons are clickable again.
+  useEffect(() => {
+    setPendingAction(null);
+  }, [status]);
+
+  const fail = (e: { message: string }) => {
+    setPendingAction(null);
+    toast.error(e.message);
+  };
 
   const reply = trpc.feature.reply.useMutation({
     onSuccess() {
@@ -713,42 +728,42 @@ function Composer({
     onError: (e) => toast.error(e.message),
   });
 
-  const markReady = trpc.feature.markReadyForPrd.useMutation({ onSuccess: onChange, onError: (e) => toast.error(e.message) });
+  const markReady = trpc.feature.markReadyForPrd.useMutation({ onSuccess: onChange, onError: fail });
   const genPrd = trpc.prd.generate.useMutation({
     onSuccess() {
       toast.success("Generating PRD…");
       onChange();
     },
-    onError: (e) => toast.error(e.message),
+    onError: fail,
   });
   const approvePrd = trpc.prd.approve.useMutation({
     onSuccess() {
       toast.success("PRD approved — planning tasks…");
       onChange();
     },
-    onError: (e) => toast.error(e.message),
+    onError: fail,
   });
-  const genTasks = trpc.task.generate.useMutation({ onSuccess: onChange, onError: (e) => toast.error(e.message) });
+  const genTasks = trpc.task.generate.useMutation({ onSuccess: onChange, onError: fail });
   const genCode = trpc.feature.generateCode.useMutation({
     onSuccess() {
       toast.success("Generating code…");
       onChange();
     },
-    onError: (e) => toast.error(e.message),
+    onError: fail,
   });
   const approveCode = trpc.feature.approveCode.useMutation({
     onSuccess() {
       toast.success("Approved");
       onChange();
     },
-    onError: (e) => toast.error(e.message),
+    onError: fail,
   });
   const ship = trpc.feature.ship.useMutation({
     onSuccess() {
       toast.success("Shipping…");
       onChange();
     },
-    onError: (e) => toast.error(e.message),
+    onError: fail,
   });
 
   const terminal = TERMINAL.has(status);
@@ -857,18 +872,24 @@ function Composer({
       ) : null}
       {actions.length > 0 ? (
         <div className="flex flex-wrap gap-2">
-          {actions.map((a) => (
-            <Button
-              key={a.label}
-              size="sm"
-              variant={a.variant ?? "default"}
-              disabled={a.pending}
-              onClick={a.run}
-            >
-              {a.pending ? <Loader2 className="size-4 animate-spin" /> : a.icon}
-              {a.label}
-            </Button>
-          ))}
+          {actions.map((a) => {
+            const working = a.pending || pendingAction === a.label;
+            return (
+              <Button
+                key={a.label}
+                size="sm"
+                variant={a.variant ?? "default"}
+                disabled={pendingAction !== null || a.pending}
+                onClick={() => {
+                  setPendingAction(a.label);
+                  a.run();
+                }}
+              >
+                {working ? <Loader2 className="size-4 animate-spin" /> : a.icon}
+                {working ? "Working…" : a.label}
+              </Button>
+            );
+          })}
         </div>
       ) : null}
 
