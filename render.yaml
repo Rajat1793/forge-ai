@@ -27,7 +27,10 @@ services:
       pnpm --filter @forge-ai/db exec prisma generate &&
       pnpm --filter @forge-ai/db exec prisma db push --skip-generate &&
       pnpm --filter @forge-ai/web build
-    startCommand: pnpm --filter @forge-ai/web start
+    # Start Next.js directly via node — NOT through pnpm. Going through pnpm
+    # makes Corepack try to download pnpm at boot and hang on its confirm
+    # prompt, so no port ever opens and Render times out the deploy.
+    startCommand: node apps/web/node_modules/next/dist/bin/next start apps/web
     healthCheckPath: /
     autoDeploy: true
     envVars:
@@ -36,6 +39,10 @@ services:
         value: production
       - key: NODE_VERSION
         value: "20"
+      # Never let Corepack block on an interactive download prompt (it would
+      # hang the build or boot forever on the free instance).
+      - key: COREPACK_ENABLE_DOWNLOAD_PROMPT
+        value: "0"
 
       # --- Database (wired automatically from the managed Postgres above) ---
       - key: DATABASE_URL
@@ -61,6 +68,11 @@ services:
       - key: ENCRYPTION_KEY
         generateValue: true
       - key: GITHUB_WEBHOOK_SECRET
+        generateValue: true
+      # Shared secret for the inbound /api/ingest endpoint (ticket/email
+      # ingestion). Retrieve the generated value from the Render dashboard to
+      # send it in the `x-forge-ingest-secret` header.
+      - key: INGEST_SECRET
         generateValue: true
 
       # --- GitHub OAuth (fill in the Render dashboard) ---------------------
