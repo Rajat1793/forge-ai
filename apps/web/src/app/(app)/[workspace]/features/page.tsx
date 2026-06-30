@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { FeatureQuickAdd } from "@/components/features/feature-quick-add";
 import { statusLabel, statusVariant } from "@/lib/feature-status";
 import { requireWorkspace } from "@/lib/auth";
 import { prisma } from "@forge-ai/db";
@@ -14,26 +14,31 @@ export default async function FeaturesPage({ params }: Props) {
   const { workspace: slug } = await params;
   const { workspace } = await requireWorkspace(slug);
 
-  const features = await prisma.featureRequest.findMany({
-    where: { workspaceId: workspace.id },
-    include: { project: true },
-    orderBy: { updatedAt: "desc" },
-  });
+  const [features, projects] = await Promise.all([
+    prisma.featureRequest.findMany({
+      where: { workspaceId: workspace.id },
+      include: { project: true },
+      orderBy: { updatedAt: "desc" },
+    }),
+    prisma.project.findMany({
+      where: { workspaceId: workspace.id },
+      select: { id: true, name: true },
+      orderBy: { createdAt: "asc" },
+    }),
+  ]);
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Feature requests</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Every idea your team is shaping into a shippable feature.
           </p>
         </div>
-        <Button asChild>
-          <Link href={`/${slug}/features/new`}>
-            <Plus className="size-4" /> New feature
-          </Link>
-        </Button>
+        <div className="shrink-0">
+          <FeatureQuickAdd workspaceSlug={slug} projects={projects} />
+        </div>
       </div>
 
       {features.length === 0 ? (
@@ -41,14 +46,9 @@ export default async function FeaturesPage({ params }: Props) {
           <CardHeader>
             <CardTitle>No feature requests yet</CardTitle>
             <CardDescription className="text-muted-foreground">
-              Capture one to kick off discovery, PRD, tasks, code, and review.
+              Hit “New feature” above to kick off discovery, PRD, tasks, code, and review.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <Button asChild>
-              <Link href={`/${slug}/features/new`}>Add the first request</Link>
-            </Button>
-          </CardContent>
         </Card>
       ) : (
         <div className="overflow-hidden rounded-lg border border-border">

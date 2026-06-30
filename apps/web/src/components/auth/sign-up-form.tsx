@@ -7,6 +7,7 @@ import { authClient } from "@forge-ai/auth/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { GitHubAuthButton } from "@/components/auth/github-auth-button";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -80,6 +81,12 @@ export function SignUpForm() {
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Creating account…" : "Create account"}
       </Button>
+      <div className="flex items-center gap-3 py-1">
+        <span className="h-px flex-1 bg-border" />
+        <span className="text-xs uppercase tracking-wider text-muted-foreground">or</span>
+        <span className="h-px flex-1 bg-border" />
+      </div>
+      <GitHubAuthButton label="Sign up with GitHub" />
     </form>
   );
 }

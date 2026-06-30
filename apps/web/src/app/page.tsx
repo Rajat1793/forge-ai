@@ -158,11 +158,11 @@ export default function HomePage() {
             A single workflow, from raw request to shipped release.
           </h2>
         </div>
-        <ol className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <ol className="flex flex-wrap justify-center gap-4">
           {phases.map((p, i) => (
             <li
               key={p.name}
-              className="rounded-2xl border border-border bg-card p-5 transition-colors hover:border-brand/40"
+              className="flex basis-full flex-col rounded-2xl border border-border bg-card p-5 transition-colors hover:border-brand/40 sm:basis-[calc(50%-0.5rem)] xl:basis-[calc(25%-0.75rem)]"
             >
               <div className="text-xs font-medium uppercase tracking-wider text-brand">
                 Stage {String(i + 1).padStart(2, "0")}

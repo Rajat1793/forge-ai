@@ -34,3 +34,33 @@ export async function getPrimaryWorkspace(userId: string) {
     orderBy: { createdAt: "asc" },
   });
 }
+
+export async function getOrCreatePrimaryWorkspace(user: {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+}) {
+  const existing = await getPrimaryWorkspace(user.id);
+  if (existing) return existing;
+
+  const name = user.name ? `${user.name}'s workspace` : "My workspace";
+  const base =
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "")
+      .slice(0, 32) || `ws-${Date.now()}`;
+  let slug = base;
+  let i = 1;
+  while (await prisma.workspace.findUnique({ where: { slug } })) {
+    slug = `${base}-${i++}`;
+  }
+
+  return prisma.workspace.create({
+    data: {
+      name,
+      slug,
+      memberships: { create: { userId: user.id, role: "OWNER" } },
+    },
+  });
+}
