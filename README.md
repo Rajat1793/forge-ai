@@ -19,6 +19,9 @@ requests against the PRD, and gates the final release with human approval.
 
 ---
 
+Live Demo: https://forge-ai-web.onrender.com/
+Product demo: https://youtu.be/PRbckd1L3Kc
+
 ## The Forge AI loop
 
 ```text
