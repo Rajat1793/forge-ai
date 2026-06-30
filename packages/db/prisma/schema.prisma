@@ -5,6 +5,9 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = []
+  // "native" for local dev; "debian-openssl-3.0.x" is the Render Linux
+  // runtime so the query engine binary ships with the production build.
+  binaryTargets   = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
