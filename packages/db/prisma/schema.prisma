@@ -101,6 +101,7 @@ model Workspace {
   subscription Subscription?
   creditLedger CreditLedger[]
   notifications Notification[]
+  activities  ActivityLog[]
 }
 
 model Membership {
@@ -185,6 +186,7 @@ model FeatureRequest {
   status          FeatureRequestStatus @default(NEW)
   duplicateOfId   String?
   releaseNotes    String?
+  shippedAt       DateTime?
   createdAt       DateTime             @default(now())
   updatedAt       DateTime             @updatedAt
   project         Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -196,6 +198,7 @@ model FeatureRequest {
   pullRequests    PullRequest[]
   codeDrafts      CodeDraft[]
   notifications   Notification[]
+  activities      ActivityLog[]
 
   @@index([workspaceId])
   @@index([projectId])
@@ -537,5 +540,41 @@ model Notification {
 
   @@index([userId, readAt])
   @@index([workspaceId])
+  @@index([featureId])
+}
+
+// -----------------------------------------------------------------------------
+// Activity feed / audit log
+// -----------------------------------------------------------------------------
+
+enum ActivityType {
+  FEATURE_CREATED
+  CLARIFY_QUESTION
+  USER_REPLIED
+  READY_FOR_PRD
+  PRD_GENERATED
+  PRD_APPROVED
+  TASKS_GENERATED
+  CODE_GENERATED
+  REVIEW_BLOCKING
+  READY_FOR_HUMAN
+  APPROVED
+  SHIPPED
+  REJECTED
+  DUPLICATE_DETECTED
+}
+
+model ActivityLog {
+  id          String          @id @default(cuid())
+  workspaceId String
+  featureId   String?
+  actorId     String?
+  type        ActivityType
+  message     String
+  createdAt   DateTime        @default(now())
+  workspace   Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  feature     FeatureRequest? @relation(fields: [featureId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, createdAt])
   @@index([featureId])
 }

@@ -1,4 +1,4 @@
-import { notifyWorkspace, prisma } from "@forge-ai/db";
+import { logActivity, notifyWorkspace, prisma } from "@forge-ai/db";
 import { generateReleaseNotes } from "@forge-ai/ai";
 import {
   createGitHubClient,
@@ -34,7 +34,10 @@ export const releaseFeature = inngest.createFunction(
     const result = await step.run("mark-shipped", () =>
       prisma.featureRequest.update({
         where: { id: feature.id },
-        data: { status: allDone ? "SHIPPED" : "APPROVED" },
+        data: {
+          status: allDone ? "SHIPPED" : "APPROVED",
+          ...(allDone ? { shippedAt: new Date() } : {}),
+        },
       }),
     );
 
@@ -61,6 +64,14 @@ export const releaseFeature = inngest.createFunction(
           type: "SHIPPED",
           title: `Shipped: ${feature.title}`,
           body: notes.slice(0, 500),
+        }),
+      );
+      await step.run("log-shipped", () =>
+        logActivity(prisma, {
+          workspaceId: feature.workspaceId,
+          featureId: feature.id,
+          type: "SHIPPED",
+          message: `Feature shipped 🚀`,
         }),
       );
     }

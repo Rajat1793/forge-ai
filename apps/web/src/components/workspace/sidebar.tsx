@@ -8,6 +8,8 @@ import {
   KanbanSquare,
   GitBranch,
   ShieldCheck,
+  BarChart3,
+  Activity,
   CreditCard,
   Settings,
   Sparkles,
@@ -21,6 +23,8 @@ const items = [
   { href: "/board", label: "Board", icon: KanbanSquare },
   { href: "/repos", label: "Repos", icon: GitBranch },
   { href: "/reviews", label: "Reviews", icon: ShieldCheck },
+  { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/activity", label: "Activity", icon: Activity },
   { href: "/billing", label: "Billing", icon: CreditCard },
   { href: "/settings", label: "Settings", icon: Settings },
 ];

@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { EVENTS, inngest } from "@forge-ai/inngest";
+import { logActivity } from "@forge-ai/db";
 import {
   createGitHubClient,
   hasGitHubAuth,
@@ -125,6 +126,13 @@ export const approvalRouter = router({
       await ctx.prisma.featureRequest.update({
         where: { id: feature.id },
         data: { status: "REJECTED" },
+      });
+      await logActivity(ctx.prisma, {
+        workspaceId: ctx.workspace.id,
+        featureId: feature.id,
+        actorId: ctx.user.id,
+        type: "REJECTED",
+        message: `${ctx.user.name ?? ctx.user.email} rejected the feature`,
       });
       return { ok: true };
     }),

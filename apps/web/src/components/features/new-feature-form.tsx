@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -25,6 +27,17 @@ export function NewFeatureForm({
   const [projectId, setProjectId] = useState(projects[0]?.id ?? "");
   const [source, setSource] = useState<"MANUAL" | "EMAIL" | "TICKET" | "CALL">("MANUAL");
   const [error, setError] = useState<string | null>(null);
+  const [debouncedTitle, setDebouncedTitle] = useState("");
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedTitle(title.trim()), 400);
+    return () => clearTimeout(t);
+  }, [title]);
+
+  const similar = trpc.feature.findSimilar.useQuery(
+    { workspaceSlug, title: debouncedTitle },
+    { enabled: debouncedTitle.length >= 3, staleTime: 30000 },
+  );
 
   const create = trpc.feature.create.useMutation({
     onSuccess(feature) {
@@ -65,6 +78,31 @@ export function NewFeatureForm({
           className="border-border bg-secondary text-foreground"
         />
       </div>
+      {similar.data && similar.data.length > 0 ? (
+        <div className="rounded-md border border-amber-500/40 bg-amber-500/10 p-3">
+          <p className="flex items-center gap-2 text-sm font-medium text-amber-200">
+            <AlertTriangle className="size-4" />
+            Possible duplicate{similar.data.length > 1 ? "s" : ""}
+          </p>
+          <ul className="mt-2 space-y-1">
+            {similar.data.map((f) => (
+              <li key={f.id} className="text-sm">
+                <Link
+                  href={`/${workspaceSlug}/features/${f.id}`}
+                  target="_blank"
+                  className="text-amber-100 underline-offset-2 hover:underline"
+                >
+                  {f.title}
+                </Link>
+                <span className="text-muted-foreground"> · {Math.round(f.score * 100)}% match</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-xs text-muted-foreground">
+            You can still submit — this is just a heads-up.
+          </p>
+        </div>
+      ) : null}
       <div className="space-y-2">
         <Label htmlFor="description" className="text-foreground">Description</Label>
         <Textarea

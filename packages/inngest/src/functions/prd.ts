@@ -1,6 +1,6 @@
 import { generateObject } from "ai";
 
-import { notifyWorkspace, prisma } from "@forge-ai/db";
+import { logActivity, notifyWorkspace, prisma } from "@forge-ai/db";
 import { heavyModel, hasAIKey, prdSchema, type PRDPayload } from "@forge-ai/ai";
 
 import { EVENTS, inngest } from "../client";
@@ -95,6 +95,14 @@ export const generatePrd = inngest.createFunction(
         type: "PRD_READY",
         title: `PRD ready for review: ${feature.title}`,
         body: "A draft PRD has been generated and is ready for your review and approval.",
+      }),
+    );
+    await step.run("log", () =>
+      logActivity(prisma, {
+        workspaceId: feature.workspaceId,
+        featureId: feature.id,
+        type: "PRD_GENERATED",
+        message: `PRD v${prd.version} generated`,
       }),
     );
 

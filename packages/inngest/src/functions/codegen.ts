@@ -1,6 +1,6 @@
 import { generateObject } from "ai";
 
-import { notifyWorkspace, prisma } from "@forge-ai/db";
+import { logActivity, notifyWorkspace, prisma } from "@forge-ai/db";
 import {
   codeDraftSchema,
   draftReviewSchema,
@@ -129,6 +129,17 @@ export const generateCode = inngest.createFunction(
           ? `Review found blocking issues: ${feature.title}`
           : `Ready for your review: ${feature.title}`,
         body: review.overallSummary,
+      }),
+    );
+
+    await step.run("log", () =>
+      logActivity(prisma, {
+        workspaceId: feature.workspaceId,
+        featureId: feature.id,
+        type: saved.hasBlocking ? "REVIEW_BLOCKING" : "CODE_GENERATED",
+        message: saved.hasBlocking
+          ? `Code draft generated with blocking review issues`
+          : `Code draft generated and passed AI review`,
       }),
     );
 

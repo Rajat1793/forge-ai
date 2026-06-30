@@ -10,6 +10,8 @@ import { reviewRouter } from "./routers/review";
 import { approvalRouter } from "./routers/approval";
 import { billingRouter } from "./routers/billing";
 import { notificationRouter } from "./routers/notification";
+import { activityRouter } from "./routers/activity";
+import { analyticsRouter } from "./routers/analytics";
 
 export const appRouter = router({
   workspace: workspaceRouter,
@@ -23,6 +25,8 @@ export const appRouter = router({
   approval: approvalRouter,
   billing: billingRouter,
   notification: notificationRouter,
+  activity: activityRouter,
+  analytics: analyticsRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { EVENTS, inngest } from "@forge-ai/inngest";
 import { prdSchema } from "@forge-ai/ai";
+import { logActivity } from "@forge-ai/db";
 
 import { router, workspaceProcedure } from "../trpc";
 
@@ -95,6 +96,13 @@ export const prdRouter = router({
       await inngest.send({
         name: EVENTS.TASKS_GENERATE,
         data: { featureId: feature.id },
+      });
+      await logActivity(ctx.prisma, {
+        workspaceId: ctx.workspace.id,
+        featureId: feature.id,
+        actorId: ctx.user.id,
+        type: "PRD_APPROVED",
+        message: `${ctx.user.name ?? ctx.user.email} approved the PRD`,
       });
       return { ok: true };
     }),
