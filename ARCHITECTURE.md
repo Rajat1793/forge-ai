@@ -2,6 +2,25 @@
 
 This document summarizes the structure of the repo and the main runtime boundaries.
 
+## Implementation status
+
+| Area | Status |
+| --- | --- |
+| Auth (BetterAuth + GitHub OAuth) | ✅ shipped |
+| Multi-tenant workspaces + memberships + invites | ✅ shipped |
+| Feature requests + AI discovery / clarification | ✅ shipped |
+| PRD generation + versioned editor + approval gate | ✅ shipped |
+| Task generation + Kanban board with drag-and-drop | ✅ shipped |
+| GitHub integration: OAuth, repo connect, signed webhooks | ✅ shipped |
+| AI review loop: PR → diff → review → blocking/non-blocking issues | ✅ shipped |
+| Human approval + release shipping | ✅ shipped |
+| Billing: Razorpay subscriptions, credit ledger, signed webhooks | ✅ shipped |
+| Marketing landing page, dashboard with live metrics | ✅ shipped |
+| Toast notifications (Sonner) wired into every mutation | ✅ shipped |
+| Workspace settings page (rename + members + invites) | ✅ shipped |
+| Demo seed script for end-to-end walkthrough | ✅ shipped |
+| Vercel deploy config | ✅ shipped |
+
 ## Goals
 
 | Goal | Reason |

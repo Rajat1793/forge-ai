@@ -54,6 +54,10 @@ export function ClarifyThread({
   const locked =
     status === "SHIPPED" || status === "REJECTED" || status === "DUPLICATE";
 
+  const lastMessage = initial[initial.length - 1];
+  const pendingQuestion =
+    lastMessage && lastMessage.author === "AI" ? lastMessage : null;
+
   return (
     <div className="space-y-4">
       {initial.length === 0 ? (
@@ -100,10 +104,20 @@ export function ClarifyThread({
           }}
           className="space-y-3"
         >
+          {pendingQuestion ? (
+            <p className="text-xs text-muted-foreground">
+              Answering:{" "}
+              <span className="text-foreground">{pendingQuestion.body}</span>
+            </p>
+          ) : null}
           <Textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
-            placeholder="Reply with the missing details…"
+            placeholder={
+              pendingQuestion
+                ? "Type your answer — the AI will ask the next question…"
+                : "Add more detail for the AI…"
+            }
             rows={4}
             className="border-border bg-card text-foreground"
           />

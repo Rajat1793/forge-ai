@@ -8,7 +8,9 @@
 
 ## Pre-record Checklist
 
-- [ ] Seed the prod DB with: 1 workspace ("Acme Inc"), 1 connected test repo, 0 features
+- [ ] Seed the prod DB with the bundled demo workspace:
+      `pnpm db:seed` — creates the "Acme Inc" workspace with one feature, PRD,
+      tasks, a fake repo, an open PR, and an AI review with one BLOCKING issue.
 - [ ] Have a real test GitHub repo ready (e.g. `forge-demo-app`) with at least one branch you can PR from
 - [ ] Pre-write the feature request text (below) — don't type live
 - [ ] Have the PR diff ready in a separate branch (commit ahead of time so you can `gh pr create` instantly)

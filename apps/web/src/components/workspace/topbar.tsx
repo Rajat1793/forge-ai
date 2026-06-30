@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, ChevronsUpDown, LogOut, Plus } from "lucide-react";
+import { toast } from "sonner";
 import { authClient } from "@forge-ai/auth/client";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { trpc } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils";
 
 type Workspace = { id: string; name: string; slug: string };
@@ -25,8 +28,41 @@ export function WorkspaceTopbar({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [newName, setNewName] = useState("");
+
+  const wsRef = useRef<HTMLDivElement>(null);
+  const userRef = useRef<HTMLDivElement>(null);
 
   const current = workspaces.find((w) => w.slug === currentSlug);
+
+  const createWorkspace = trpc.workspace.create.useMutation({
+    onSuccess(workspace) {
+      setOpen(false);
+      setCreating(false);
+      setNewName("");
+      router.push(`/${workspace.slug}/dashboard`);
+      router.refresh();
+    },
+    onError(err) {
+      toast.error(err.message);
+    },
+  });
+
+  useEffect(() => {
+    function handlePointerDown(e: MouseEvent) {
+      const target = e.target as Node;
+      if (wsRef.current && !wsRef.current.contains(target)) {
+        setOpen(false);
+        setCreating(false);
+      }
+      if (userRef.current && !userRef.current.contains(target)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, []);
 
   async function handleSignOut() {
     await authClient.signOut();
@@ -36,7 +72,7 @@ export function WorkspaceTopbar({
 
   return (
     <header className="flex items-center justify-between border-b border-border bg-card px-6 py-3 backdrop-blur">
-      <div className="relative">
+      <div className="relative" ref={wsRef}>
         <button
           onClick={() => setOpen((v) => !v)}
           className="flex items-center gap-2 rounded-md border border-border bg-secondary px-3 py-1.5 text-sm hover:bg-accent"
@@ -64,19 +100,60 @@ export function WorkspaceTopbar({
               </Link>
             ))}
             <div className="mt-1 border-t border-border pt-1">
-              <Link
-                href="/onboarding"
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-brand hover:bg-accent"
-              >
-                <Plus className="size-4" />
-                New workspace
-              </Link>
+              {creating ? (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const name = newName.trim();
+                    if (name.length < 2) return;
+                    createWorkspace.mutate({ name });
+                  }}
+                  className="space-y-2 p-2"
+                >
+                  <Input
+                    autoFocus
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    placeholder="Workspace name"
+                    className="h-8 border-border bg-secondary text-foreground"
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      type="submit"
+                      size="sm"
+                      className="flex-1"
+                      disabled={createWorkspace.isPending || newName.trim().length < 2}
+                    >
+                      {createWorkspace.isPending ? "Creating…" : "Create"}
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setCreating(false);
+                        setNewName("");
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              ) : (
+                <button
+                  onClick={() => setCreating(true)}
+                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-brand hover:bg-accent"
+                >
+                  <Plus className="size-4" />
+                  New workspace
+                </button>
+              )}
             </div>
           </div>
         ) : null}
       </div>
 
-      <div className="relative">
+      <div className="relative" ref={userRef}>
         <button
           onClick={() => setMenuOpen((v) => !v)}
           className="flex items-center gap-2 rounded-md border border-border bg-secondary px-3 py-1.5 text-sm hover:bg-accent"

@@ -7,9 +7,12 @@ import { EVENTS, inngest } from "../client";
 
 const clarifySchema = z.object({
   decision: z.enum(["NEEDS_INFO", "READY_FOR_PRD", "DUPLICATE"]),
-  questions: z.array(z.string()).max(5),
+  question: z.string().describe("The single next clarifying question to ask. Empty unless decision is NEEDS_INFO."),
   reasoning: z.string(),
 });
+
+// Stop asking after this many AI questions so discovery always converges.
+const MAX_QUESTIONS = 6;
 
 export const clarifyFeatureRequest = inngest.createFunction(
   { id: "feature-clarify", name: "Clarify feature request" },
@@ -32,12 +35,21 @@ export const clarifyFeatureRequest = inngest.createFunction(
       }),
     );
 
+    const askedCount = feature.clarifyMessages.filter((m) => m.author === "AI").length;
+
     const result = await step.run("ai-decide", async () => {
       if (!hasAIKey()) {
         return {
           decision: "READY_FOR_PRD" as const,
-          questions: [],
+          question: "",
           reasoning: "AI key not configured — proceeding without clarification.",
+        };
+      }
+      if (askedCount >= MAX_QUESTIONS) {
+        return {
+          decision: "READY_FOR_PRD" as const,
+          question: "",
+          reasoning: "Reached the clarifying-question limit — proceeding to PRD.",
         };
       }
       const transcript = feature.clarifyMessages
@@ -48,27 +60,22 @@ export const clarifyFeatureRequest = inngest.createFunction(
         schema: clarifySchema,
         system:
           "You are a senior product manager triaging an incoming feature request. " +
-          "Decide if it needs clarifying questions, is ready for a PRD, or is a duplicate.",
+          "Ask clarifying questions ONE AT A TIME so the requester can answer conversationally. " +
+          "Given the conversation so far, ask only the single most important question that has NOT already been answered. " +
+          "Never repeat a question that was already asked or answered. " +
+          "Once you have enough detail to write a PRD, decide READY_FOR_PRD with an empty question. " +
+          "If it clearly duplicates existing work, decide DUPLICATE.",
         prompt: `Feature: ${feature.title}\n\nDescription:\n${feature.description}\n\nConversation so far:\n${transcript || "(none)"}`,
       });
       return object;
     });
 
-    if (result.decision === "NEEDS_INFO" && result.questions.length > 0) {
-      await step.run("post-questions", () =>
-        prisma.$transaction([
-          ...result.questions.map((q) =>
-            prisma.clarifyMessage.create({
-              data: { featureId, author: "AI", body: q },
-            }),
-          ),
-        ]),
-      );
-    } else if (result.decision === "READY_FOR_PRD") {
-      await step.run("mark-ready", () =>
-        prisma.featureRequest.update({
-          where: { id: featureId },
-          data: { status: "READY_FOR_PRD" },
+    const question = result.question?.trim() ?? "";
+
+    if (result.decision === "NEEDS_INFO" && question.length > 0) {
+      await step.run("post-question", () =>
+        prisma.clarifyMessage.create({
+          data: { featureId, author: "AI", body: question },
         }),
       );
     } else if (result.decision === "DUPLICATE") {
@@ -76,6 +83,14 @@ export const clarifyFeatureRequest = inngest.createFunction(
         prisma.featureRequest.update({
           where: { id: featureId },
           data: { status: "DUPLICATE" },
+        }),
+      );
+    } else {
+      // READY_FOR_PRD, or NEEDS_INFO with no concrete question to ask.
+      await step.run("mark-ready", () =>
+        prisma.featureRequest.update({
+          where: { id: featureId },
+          data: { status: "READY_FOR_PRD" },
         }),
       );
     }
