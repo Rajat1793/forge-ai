@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   title: "Forge AI · Ship features end-to-end with AI",
   description:
     "Forge AI turns feature requests into PRDs, tasks, GitHub PR reviews, and release approvals through a single AI-powered workflow.",
+  verification: {
+    google: "RON2xGFxpNJG8g6LPLbaQb5DbscOTrQjJcH5LBc8Itk",
+  },
 };
 
 export default function RootLayout({
