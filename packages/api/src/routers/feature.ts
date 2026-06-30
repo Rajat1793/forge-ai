@@ -26,9 +26,13 @@ export const featureRouter = router({
         include: {
           project: true,
           clarifyMessages: { orderBy: { createdAt: "asc" } },
-          prds: { include: { versions: { orderBy: { version: "desc" }, take: 1 } } },
+          prds: { include: { versions: { orderBy: { version: "desc" } } } },
           tasks: { orderBy: { position: "asc" } },
           pullRequests: { include: { repository: true }, orderBy: { openedAt: "desc" } },
+          codeDrafts: {
+            orderBy: { createdAt: "desc" },
+            include: { issues: { orderBy: { createdAt: "asc" } } },
+          },
         },
       });
       if (!feature) throw new TRPCError({ code: "NOT_FOUND" });
@@ -110,6 +114,68 @@ export const featureRouter = router({
       await ctx.prisma.featureRequest.updateMany({
         where: { id: input.featureId, workspaceId: ctx.workspace.id },
         data: { status: "READY_FOR_PRD" },
+      });
+      return { ok: true };
+    }),
+
+  generateCode: workspaceProcedure
+    .input(z.object({ workspaceSlug: z.string(), featureId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const feature = await ctx.prisma.featureRequest.findFirst({
+        where: { id: input.featureId, workspaceId: ctx.workspace.id },
+        include: { tasks: { select: { id: true } } },
+      });
+      if (!feature) throw new TRPCError({ code: "NOT_FOUND" });
+      if (feature.tasks.length === 0)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Generate tasks before generating code.",
+        });
+      await ctx.prisma.featureRequest.update({
+        where: { id: feature.id },
+        data: { status: "IN_REVIEW" },
+      });
+      await inngest.send({
+        name: EVENTS.CODE_GENERATE,
+        data: { featureId: feature.id },
+      });
+      return { ok: true };
+    }),
+
+  approveCode: workspaceProcedure
+    .input(z.object({ workspaceSlug: z.string(), featureId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const role = ctx.role;
+      if (role !== "OWNER" && role !== "ADMIN" && role !== "REVIEWER")
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only owners, admins, or reviewers can approve.",
+        });
+      const feature = await ctx.prisma.featureRequest.findFirst({
+        where: { id: input.featureId, workspaceId: ctx.workspace.id },
+      });
+      if (!feature) throw new TRPCError({ code: "NOT_FOUND" });
+      await ctx.prisma.task.updateMany({
+        where: { featureId: feature.id },
+        data: { status: "DONE" },
+      });
+      await ctx.prisma.featureRequest.update({
+        where: { id: feature.id },
+        data: { status: "APPROVED" },
+      });
+      return { ok: true };
+    }),
+
+  ship: workspaceProcedure
+    .input(z.object({ workspaceSlug: z.string(), featureId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const feature = await ctx.prisma.featureRequest.findFirst({
+        where: { id: input.featureId, workspaceId: ctx.workspace.id },
+      });
+      if (!feature) throw new TRPCError({ code: "NOT_FOUND" });
+      await inngest.send({
+        name: EVENTS.RELEASE_SHIP,
+        data: { featureId: feature.id },
       });
       return { ok: true };
     }),

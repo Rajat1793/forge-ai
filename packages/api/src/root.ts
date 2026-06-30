@@ -9,6 +9,7 @@ import { pullRequestRouter } from "./routers/pull-request";
 import { reviewRouter } from "./routers/review";
 import { approvalRouter } from "./routers/approval";
 import { billingRouter } from "./routers/billing";
+import { notificationRouter } from "./routers/notification";
 
 export const appRouter = router({
   workspace: workspaceRouter,
@@ -21,6 +22,7 @@ export const appRouter = router({
   review: reviewRouter,
   approval: approvalRouter,
   billing: billingRouter,
+  notification: notificationRouter,
 });
 
 export type AppRouter = typeof appRouter;

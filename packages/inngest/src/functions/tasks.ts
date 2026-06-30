@@ -1,6 +1,6 @@
 import { generateObject } from "ai";
 
-import { prisma } from "@forge-ai/db";
+import { notifyWorkspace, prisma } from "@forge-ai/db";
 import { hasAIKey, heavyModel, taskBreakdownSchema, type TaskBreakdown } from "@forge-ai/ai";
 
 import { EVENTS, inngest } from "../client";
@@ -89,6 +89,16 @@ export const generateTasks = inngest.createFunction(
       });
       return { count: created.length };
     });
+
+    await step.run("notify", () =>
+      notifyWorkspace(prisma, {
+        workspaceId: data.workspaceId,
+        featureId: data.id,
+        type: "TASKS_READY",
+        title: `Tasks planned: ${data.title}`,
+        body: `${result.count} tasks were generated. You can refine them, then generate code.`,
+      }),
+    );
 
     return { featureId, ...result };
   },

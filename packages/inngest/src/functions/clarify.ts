@@ -1,6 +1,6 @@
 import { generateObject } from "ai";
 import { z } from "zod";
-import { prisma } from "@forge-ai/db";
+import { notifyWorkspace, prisma } from "@forge-ai/db";
 import { cheapModel, hasAIKey } from "@forge-ai/ai";
 
 import { EVENTS, inngest } from "../client";
@@ -76,6 +76,15 @@ export const clarifyFeatureRequest = inngest.createFunction(
       await step.run("post-question", () =>
         prisma.clarifyMessage.create({
           data: { featureId, author: "AI", body: question },
+        }),
+      );
+      await step.run("notify-question", () =>
+        notifyWorkspace(prisma, {
+          workspaceId: feature.workspaceId,
+          featureId,
+          type: "CLARIFY_QUESTION",
+          title: `New question: ${feature.title}`,
+          body: question,
         }),
       );
     } else if (result.decision === "DUPLICATE") {

@@ -9,6 +9,7 @@ import { authClient } from "@forge-ai/auth/client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NotificationsBell } from "@/components/workspace/notifications-bell";
 import { trpc } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils";
 
@@ -153,30 +154,33 @@ export function WorkspaceTopbar({
         ) : null}
       </div>
 
-      <div className="relative" ref={userRef}>
-        <button
-          onClick={() => setMenuOpen((v) => !v)}
-          className="flex items-center gap-2 rounded-md border border-border bg-secondary px-3 py-1.5 text-sm hover:bg-accent"
-        >
-          <span className="hidden text-foreground md:inline">{user.name || user.email}</span>
-          <span className="grid size-7 place-items-center rounded-full bg-brand/20 text-brand">
-            {(user.name || user.email).slice(0, 1).toUpperCase()}
-          </span>
-        </button>
-        {menuOpen ? (
-          <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-lg border border-border bg-popover p-1 shadow-2xl">
-            <div className="px-3 py-2 text-xs text-muted-foreground">{user.email}</div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleSignOut}
-              className="w-full justify-start text-foreground hover:bg-accent"
-            >
-              <LogOut className="size-4" />
-              Sign out
-            </Button>
-          </div>
-        ) : null}
+      <div className="flex items-center gap-3">
+        <NotificationsBell workspaceSlug={currentSlug} />
+        <div className="relative" ref={userRef}>
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            className="flex items-center gap-2 rounded-md border border-border bg-secondary px-3 py-1.5 text-sm hover:bg-accent"
+          >
+            <span className="hidden text-foreground md:inline">{user.name || user.email}</span>
+            <span className="grid size-7 place-items-center rounded-full bg-brand/20 text-brand">
+              {(user.name || user.email).slice(0, 1).toUpperCase()}
+            </span>
+          </button>
+          {menuOpen ? (
+            <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-lg border border-border bg-popover p-1 shadow-2xl">
+              <div className="px-3 py-2 text-xs text-muted-foreground">{user.email}</div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleSignOut}
+                className="w-full justify-start text-foreground hover:bg-accent"
+              >
+                <LogOut className="size-4" />
+                Sign out
+              </Button>
+            </div>
+          ) : null}
+        </div>
       </div>
     </header>
   );

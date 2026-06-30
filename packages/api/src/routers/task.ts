@@ -107,4 +107,44 @@ export const taskRouter = router({
         },
       });
     }),
+
+  update: workspaceProcedure
+    .input(
+      z.object({
+        workspaceSlug: z.string(),
+        taskId: z.string(),
+        title: z.string().min(3).optional(),
+        description: z.string().min(3).optional(),
+        type: typeEnum.optional(),
+        estimateHours: z.number().min(0.5).max(40).nullable().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const task = await ctx.prisma.task.findFirst({
+        where: { id: input.taskId, feature: { workspaceId: ctx.workspace.id } },
+      });
+      if (!task) throw new TRPCError({ code: "NOT_FOUND" });
+      return ctx.prisma.task.update({
+        where: { id: task.id },
+        data: {
+          ...(input.title != null ? { title: input.title } : {}),
+          ...(input.description != null ? { description: input.description } : {}),
+          ...(input.type != null ? { type: input.type } : {}),
+          ...(input.estimateHours !== undefined
+            ? { estimateHours: input.estimateHours }
+            : {}),
+        },
+      });
+    }),
+
+  delete: workspaceProcedure
+    .input(z.object({ workspaceSlug: z.string(), taskId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const task = await ctx.prisma.task.findFirst({
+        where: { id: input.taskId, feature: { workspaceId: ctx.workspace.id } },
+      });
+      if (!task) throw new TRPCError({ code: "NOT_FOUND" });
+      await ctx.prisma.task.delete({ where: { id: task.id } });
+      return { ok: true };
+    }),
 });

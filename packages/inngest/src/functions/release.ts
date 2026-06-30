@@ -1,4 +1,5 @@
-import { prisma } from "@forge-ai/db";
+import { notifyWorkspace, prisma } from "@forge-ai/db";
+import { generateReleaseNotes } from "@forge-ai/ai";
 import {
   createGitHubClient,
   hasGitHubAuth,
@@ -19,6 +20,10 @@ export const releaseFeature = inngest.createFunction(
         include: {
           tasks: true,
           pullRequests: { include: { repository: true } },
+          prds: {
+            include: { versions: { orderBy: { version: "desc" }, take: 1 } },
+            take: 1,
+          },
         },
       }),
     );
@@ -32,6 +37,33 @@ export const releaseFeature = inngest.createFunction(
         data: { status: allDone ? "SHIPPED" : "APPROVED" },
       }),
     );
+
+    if (result.status === "SHIPPED") {
+      const version = feature.prds[0]?.versions[0] ?? null;
+      const notes = await step.run("release-notes", () =>
+        generateReleaseNotes({
+          title: feature.title,
+          problemStatement: version?.problemStatement,
+          goals: version?.goals,
+          tasks: feature.tasks.map((t) => ({ title: t.title, type: t.type })),
+        }),
+      );
+      await step.run("save-notes", () =>
+        prisma.featureRequest.update({
+          where: { id: feature.id },
+          data: { releaseNotes: notes },
+        }),
+      );
+      await step.run("notify-shipped", () =>
+        notifyWorkspace(prisma, {
+          workspaceId: feature.workspaceId,
+          featureId: feature.id,
+          type: "SHIPPED",
+          title: `Shipped: ${feature.title}`,
+          body: notes.slice(0, 500),
+        }),
+      );
+    }
 
     await step.run("celebrate-on-prs", async () => {
       if (!hasGitHubAuth() || result.status !== "SHIPPED") return { skipped: true };

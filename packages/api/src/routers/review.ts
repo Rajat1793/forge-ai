@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { EVENTS, inngest } from "@forge-ai/inngest";
+import { suggestIssueFix } from "@forge-ai/ai";
 
 import { router, workspaceProcedure } from "../trpc";
 
@@ -67,5 +68,48 @@ export const reviewRouter = router({
         data: { pullRequestId: pr.id },
       });
       return { ok: true };
+    }),
+
+  suggestFix: workspaceProcedure
+    .input(z.object({ workspaceSlug: z.string(), draftIssueId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const issue = await ctx.prisma.draftIssue.findFirst({
+        where: {
+          id: input.draftIssueId,
+          draft: { feature: { workspaceId: ctx.workspace.id } },
+        },
+        include: {
+          draft: {
+            include: {
+              feature: {
+                include: {
+                  prds: {
+                    include: {
+                      versions: { orderBy: { version: "desc" }, take: 1 },
+                    },
+                    take: 1,
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+      if (!issue) throw new TRPCError({ code: "NOT_FOUND" });
+      const version = issue.draft.feature.prds[0]?.versions[0] ?? null;
+      const suggestion = await suggestIssueFix({
+        issueTitle: issue.title,
+        issueDescription: issue.description,
+        file: issue.file,
+        diff: issue.draft.diff,
+        prdContext: version
+          ? `Problem: ${version.problemStatement}\nGoals: ${version.goals.join(", ")}`
+          : undefined,
+      });
+      await ctx.prisma.draftIssue.update({
+        where: { id: issue.id },
+        data: { suggestion },
+      });
+      return { suggestion };
     }),
 });

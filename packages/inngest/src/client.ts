@@ -10,6 +10,7 @@ export const EVENTS = {
   FEATURE_CLARIFY: "feature/clarify.requested",
   PRD_GENERATE: "prd/generate.requested",
   TASKS_GENERATE: "tasks/generate.requested",
+  CODE_GENERATE: "code/generate.requested",
   PR_REVIEW: "pr/ai_review.requested",
   RELEASE_SHIP: "release/ship.requested",
 } as const;

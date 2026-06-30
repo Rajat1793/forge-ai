@@ -29,6 +29,7 @@ model User {
   sessions      Session[]
   memberships   Membership[]
   invitesSent   Invite[]     @relation("InvitesSent")
+  notifications Notification[]
 }
 
 model Account {
@@ -99,6 +100,7 @@ model Workspace {
   repositories Repository[]
   subscription Subscription?
   creditLedger CreditLedger[]
+  notifications Notification[]
 }
 
 model Membership {
@@ -182,6 +184,7 @@ model FeatureRequest {
   source          FeatureSource        @default(MANUAL)
   status          FeatureRequestStatus @default(NEW)
   duplicateOfId   String?
+  releaseNotes    String?
   createdAt       DateTime             @default(now())
   updatedAt       DateTime             @updatedAt
   project         Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -191,6 +194,8 @@ model FeatureRequest {
   prds            PRD[]
   tasks           Task[]
   pullRequests    PullRequest[]
+  codeDrafts      CodeDraft[]
+  notifications   Notification[]
 
   @@index([workspaceId])
   @@index([projectId])
@@ -463,4 +468,74 @@ model CreditLedger {
 
   @@index([workspaceId])
   @@index([createdAt])
+}
+
+// -----------------------------------------------------------------------------
+// In-app code drafts (AI-generated diffs, reviewed in-app, no GitHub push)
+// -----------------------------------------------------------------------------
+
+model CodeDraft {
+  id            String         @id @default(cuid())
+  featureId     String
+  summary       String         @db.Text
+  diff          String         @db.Text
+  filesChanged  Int            @default(0)
+  reviewSummary String?        @db.Text
+  coverageScore Float?
+  readyForHuman Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  feature       FeatureRequest @relation(fields: [featureId], references: [id], onDelete: Cascade)
+  issues        DraftIssue[]
+
+  @@index([featureId])
+}
+
+model DraftIssue {
+  id          String         @id @default(cuid())
+  draftId     String
+  severity    ReviewSeverity
+  category    ReviewCategory
+  title       String
+  description String         @db.Text
+  file        String?
+  suggestion  String?        @db.Text
+  createdAt   DateTime       @default(now())
+  draft       CodeDraft      @relation(fields: [draftId], references: [id], onDelete: Cascade)
+
+  @@index([draftId])
+}
+
+// -----------------------------------------------------------------------------
+// Notifications (in-app feed + optional email)
+// -----------------------------------------------------------------------------
+
+enum NotificationType {
+  CLARIFY_QUESTION
+  PRD_READY
+  TASKS_READY
+  CODE_READY
+  REVIEW_DONE
+  REVIEW_BLOCKING
+  READY_FOR_HUMAN
+  SHIPPED
+  REJECTED
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  workspaceId String
+  userId      String
+  featureId   String?
+  type        NotificationType
+  title       String
+  body        String
+  readAt      DateTime?
+  createdAt   DateTime         @default(now())
+  workspace   Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  feature     FeatureRequest?  @relation(fields: [featureId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@index([workspaceId])
+  @@index([featureId])
 }
