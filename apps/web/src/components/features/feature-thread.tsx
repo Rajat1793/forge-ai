@@ -796,6 +796,14 @@ function Composer({
       });
     }
     if (status === "PRD_DRAFT" && hasPrd) {
+      // At PRD_DRAFT the draft is always awaiting approval — surface "Approve
+      // PRD" as the primary next step so the flow never dead-ends on regenerate.
+      list.push({
+        label: "Approve PRD",
+        icon: <CheckCircle2 className="size-4" />,
+        run: () => approvePrd.mutate({ workspaceSlug, featureId }),
+        pending: approvePrd.isPending,
+      });
       list.push({
         label: "Regenerate PRD",
         icon: <Sparkles className="size-4" />,
@@ -803,14 +811,6 @@ function Composer({
         pending: genPrd.isPending,
         variant: "outline",
       });
-      if (!prdApproved) {
-        list.push({
-          label: "Approve PRD",
-          icon: <CheckCircle2 className="size-4" />,
-          run: () => approvePrd.mutate({ workspaceSlug, featureId }),
-          pending: approvePrd.isPending,
-        });
-      }
     }
     if (status === "TASKS_PLANNED" || status === "PLAN_APPROVED" || status === "IN_PROGRESS") {
       list.push({

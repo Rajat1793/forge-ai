@@ -60,7 +60,10 @@ export const generatePrd = inngest.createFunction(
     const prd = await step.run("persist", async () => {
       const created = await prisma.pRD.upsert({
         where: { id: feature.id + ":prd" }, // sentinel for upsert (id collision-safe)
-        update: {},
+        // A freshly (re)generated draft is no longer approved — clear any prior
+        // approval so the feature returns to a reviewable PRD_DRAFT state and the
+        // "Approve PRD" action reappears.
+        update: { approvedAt: null, approvedBy: null },
         create: { id: feature.id + ":prd", featureId: feature.id },
       });
       const lastVersion = await prisma.pRDVersion.findFirst({
