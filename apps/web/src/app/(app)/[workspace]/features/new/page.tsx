@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { NewFeatureForm } from "@/components/features/new-feature-form";
+import { NewFeatureChat } from "@/components/features/new-feature-chat";
 import { requireWorkspace } from "@/lib/auth";
 import { prisma } from "@forge-ai/db";
 
@@ -17,20 +17,21 @@ export default async function NewFeaturePage({ params }: Props) {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <header>
-        <h1 className="text-2xl font-semibold">New feature request</h1>
+        <h1 className="text-2xl font-semibold">Start a feature</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          The AI will read it, decide if it needs clarifying questions, and post them back here.
+          Just describe what you want. Forge AI runs discovery, drafts the PRD, plans tasks,
+          writes the code, and ships it — guiding you step by step.
         </p>
       </header>
       <Card className="border-border bg-secondary">
         <CardHeader>
-          <CardTitle>Tell us what to build</CardTitle>
+          <CardTitle>What do you want to build?</CardTitle>
           <CardDescription className="text-muted-foreground">
-            Short title, then a paragraph or two of context.
+            One message is enough — no forms to fill out.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <NewFeatureForm
+          <NewFeatureChat
             workspaceSlug={slug}
             projects={projects.map((p) => ({ id: p.id, name: p.name }))}
           />

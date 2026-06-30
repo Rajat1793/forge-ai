@@ -39,6 +39,22 @@ type PrdVersion = Feature["prds"][number]["versions"][number];
 const TERMINAL = new Set(["SHIPPED", "REJECTED", "DUPLICATE"]);
 const AI_WORKING = new Set(["NEW", "CLARIFYING", "PRD_APPROVED", "IN_REVIEW"]);
 
+// Plain-language "what happens next" hints so the flow guides itself.
+const GUIDANCE: Record<string, string> = {
+  NEW: "Forge AI is reading your request…",
+  CLARIFYING: "Answer below to help Forge AI — or skip ahead with “Mark ready for PRD”.",
+  READY_FOR_PRD: "Discovery’s done. Generate the PRD to keep going.",
+  PRD_DRAFT: "Review the PRD above. Approve it to plan tasks, or reply with changes.",
+  PRD_APPROVED: "Planning the tasks…",
+  TASKS_PLANNED: "Review the tasks, tweak if needed, then generate code.",
+  PLAN_APPROVED: "Review the tasks, tweak if needed, then generate code.",
+  IN_PROGRESS: "Generate code when the tasks look right.",
+  IN_REVIEW: "Forge AI is reviewing the draft…",
+  FIX_NEEDED: "Address the issues above, then regenerate the code.",
+  READY_FOR_HUMAN: "Looks ready. Approve to lock it in.",
+  APPROVED: "All set — ship it to deploy and generate release notes.",
+};
+
 function fmt(date: Date | string) {
   return new Date(date).toLocaleString();
 }
@@ -813,7 +829,7 @@ function Composer({
     }
     if (status === "APPROVED") {
       list.push({
-        label: "Ship it",
+        label: "Ship / Deploy",
         icon: <Rocket className="size-4" />,
         run: () => ship.mutate({ workspaceSlug, featureId }),
         pending: ship.isPending,
@@ -833,6 +849,12 @@ function Composer({
 
   return (
     <div className="space-y-3 border-t border-border pt-3">
+      {GUIDANCE[status] ? (
+        <p className="flex items-center gap-2 px-1 text-xs text-muted-foreground">
+          <Sparkles className="size-3.5 text-brand" />
+          {GUIDANCE[status]}
+        </p>
+      ) : null}
       {actions.length > 0 ? (
         <div className="flex flex-wrap gap-2">
           {actions.map((a) => (

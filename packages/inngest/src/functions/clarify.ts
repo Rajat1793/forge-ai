@@ -11,8 +11,8 @@ const clarifySchema = z.object({
   reasoning: z.string(),
 });
 
-// Stop asking after this many AI questions so discovery always converges.
-const MAX_QUESTIONS = 6;
+// Keep discovery short and low-friction: ask at most a question or two, then move on.
+const MAX_QUESTIONS = 2;
 
 export const clarifyFeatureRequest = inngest.createFunction(
   { id: "feature-clarify", name: "Clarify feature request" },
@@ -60,10 +60,11 @@ export const clarifyFeatureRequest = inngest.createFunction(
         schema: clarifySchema,
         system:
           "You are a senior product manager triaging an incoming feature request. " +
-          "Ask clarifying questions ONE AT A TIME so the requester can answer conversationally. " +
-          "Given the conversation so far, ask only the single most important question that has NOT already been answered. " +
-          "Never repeat a question that was already asked or answered. " +
-          "Once you have enough detail to write a PRD, decide READY_FOR_PRD with an empty question. " +
+          "Your goal is to reach a PRD as fast as possible with minimal friction for the requester. " +
+          "Only ask a clarifying question when it is genuinely blocking — i.e. you truly cannot draft a sensible PRD without the answer. " +
+          "Strongly prefer making reasonable, stated assumptions over asking. Never ask about nice-to-haves, edge cases, or anything you can reasonably infer. " +
+          "Ask at most one short question at a time, and never repeat anything already asked or answered. " +
+          "As soon as you can write a useful PRD (assumptions are fine), decide READY_FOR_PRD with an empty question. " +
           "If it clearly duplicates existing work, decide DUPLICATE.",
         prompt: `Feature: ${feature.title}\n\nDescription:\n${feature.description}\n\nConversation so far:\n${transcript || "(none)"}`,
       });
