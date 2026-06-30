@@ -1,13 +1,10 @@
 import type { NextConfig } from "next";
+import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
 
 const nextConfig: NextConfig = {
   experimental: {
     typedRoutes: false,
   },
-  // Keep Prisma out of the server bundle so its native query-engine binary
-  // stays next to the client in node_modules at runtime (otherwise Render
-  // throws "could not locate the Query Engine for runtime debian-openssl-3.0.x").
-  serverExternalPackages: ["@prisma/client", ".prisma/client", "prisma"],
   transpilePackages: [
     "@forge-ai/ai",
     "@forge-ai/api",
@@ -17,6 +14,16 @@ const nextConfig: NextConfig = {
     "@forge-ai/github",
     "@forge-ai/inngest",
   ],
+  // Prisma is imported through the transpiled @forge-ai/db workspace package,
+  // so Next bundles it into the server chunks. This official plugin copies the
+  // native query-engine binary (libquery_engine-debian-openssl-3.0.x.so.node)
+  // next to the bundle so it resolves at runtime on Render.
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.plugins = [...config.plugins, new PrismaPlugin()];
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
