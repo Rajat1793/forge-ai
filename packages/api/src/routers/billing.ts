@@ -74,10 +74,15 @@ export const billingRouter = router({
         throw new TRPCError({ code: "BAD_REQUEST", message: "Free plan needs no order" });
       }
       const plan = PLANS[input.plan];
+      // Razorpay caps the receipt at 40 chars, so keep it short and bounded.
+      const receipt = `${ctx.workspace.slug.slice(0, 18)}-${input.plan.toLowerCase()}-${Date.now().toString(36)}`.slice(
+        0,
+        40,
+      );
       const order = await createRazorpayOrder({
         amountInPaise: plan.priceInr * 100,
         currency: "INR",
-        receipt: `${ctx.workspace.slug}-${input.plan}-${Date.now()}`,
+        receipt,
         notes: { workspaceId: ctx.workspace.id, plan: input.plan },
       });
       return {
